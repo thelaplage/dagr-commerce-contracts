@@ -67,10 +67,17 @@ ECOSYSTEM_FILE_TO_SCHEMA = {
 }
 
 # Boundary-aware, case-insensitive matcher for property names that resemble
-# sensitive material. Word boundaries are the start/end of the key or an
-# underscore/hyphen, so "pan" matches but "japan"/"span" do not. This mirrors the
-# structural rejection pattern in common.schema.json#/$defs/safe_extension_key so
-# the validator is a defense-in-depth check over what the schema already rejects.
+# sensitive CREDENTIAL material. Word boundaries are the start/end of the key or
+# an underscore/hyphen, so "pan" matches but "japan"/"span" do not.
+#
+# NOTE (intentional divergence): this is a DEFENSE-IN-DEPTH scan over EVERY key at
+# any depth in a fixture, so it lists credentials ONLY. The schema's
+# common.schema.json#/$defs/safe_extension_key is broader — it ALSO rejects
+# aggregate-verdict and native/ARCS-authority keys (verdict/trusted/object_type/
+# envelope_kind/...) — but that restriction is scoped to the `extensions` bucket.
+# Those tokens MUST NOT be added here: every top-level object legitimately carries
+# a root `object_type`, so a global scan for it would fail valid fixtures. Keep the
+# verdict/authority restriction in the schema (extensions-scoped) only.
 SENSITIVE_KEY_RE = re.compile(
     r"(?i)(^|[_-])("
     r"card|pan|cvv|cvc|bearer|secret|client_secret|password|passwd|"

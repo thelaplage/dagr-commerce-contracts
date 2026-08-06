@@ -17,6 +17,14 @@ hermetic. Every result below is from actual execution in this worktree.
   `safe_extension_object` (`propertyNames → safe_extension_key`,
   `additionalProperties → safe_value`). `extensions` now points at
   `safe_extension_object`, so sensitive keys are rejected at any nesting depth.
+  The `safe_extension_key` blocklist covers three families: credentials,
+  **aggregate-verdict keys** (`verdict/trusted/safe/compliant/verified/governed`),
+  and **native/ARCS-authority-impersonation keys**
+  (`object_type/envelope_kind/arcs_receipt/verifier_verdict/receipt/attestation`) —
+  so `extensions` cannot reintroduce a verdict or impersonate native/ARCS authority
+  at any depth. (The validator's global credential key-scan intentionally stays
+  credentials-only, since every top-level object has a legitimate root
+  `object_type`.)
 - **C0-2 — described-but-unenforced constraints are now enforced.**
   1. `date-time` (and `uri`) are checked by a strict `FormatChecker` in
      `validate.py`, passed to every validator (no optional libraries used).
@@ -31,6 +39,13 @@ hermetic. Every result below is from actual execution in this worktree.
 - **Validator defense-in-depth.** `check_no_raw_sensitive_material` now scans all
   fixtures for sensitive-looking property names at any depth (fails only on
   positive fixtures).
+- **Compatibility (version bump + generated report).** This tightening shrinks the
+  accepted-instance set, so the vocabulary version is bumped `0.1.0 → 0.2.0`
+  (`pyproject.toml`), and `scripts/gen_compat_report.py` generates
+  `compatibility/COMPATIBILITY_REPORT.md` + `compatibility/compat-report.v0.1.json`
+  **from execution** — each of the 9 breaking corrections + 1 newly-required field
+  is proven by validating its committed fixture. `test_compat_report_is_fresh`
+  fails if the committed report drifts from a fresh regeneration.
 
 ## Gate — exact commands and real results
 
@@ -43,10 +58,10 @@ plus transitive pins). CI additionally runs the 3.9/3.12 matrix.
 [PASS] schemas-parse: 30/30 schema files parse and are valid Draft 2020-12
 [PASS] positive-fixtures: 16/16 positive fixtures validate against their schema
 [PASS] negative-fixtures: 13/13 negative fixtures fail for the intended path-scoped reason
-[PASS] mutation-fixtures: 11/11 mutation fixtures fail for the intended path-scoped reason
+[PASS] mutation-fixtures: 13/13 mutation fixtures fail for the intended path-scoped reason
 [PASS] ecosystem-declarations: 13/13 .ecosystem declarations validate against vendored schemas
 [PASS] no-aggregate-verdict: scanned 17 schemas and all fixtures for aggregate-verdict outcome values
-[PASS] no-raw-sensitive-material: scanned 40 fixtures (all classes) for sensitive-looking keys at any depth; 0 in positive fixtures, 3 expected smuggle key(s) in negative/mutation fixtures (rejected by schema validation)
+[PASS] no-raw-sensitive-material: scanned 42 fixtures (all classes) for sensitive-looking keys at any depth; 0 in positive fixtures, 3 expected smuggle key(s) in negative/mutation fixtures (rejected by schema validation)
 exit_code=0 (all checks passed)
 ```
 
@@ -58,7 +73,7 @@ git diff --exit-code compatibility/version-policy.v0.1.json   # no diff -> not s
 
 ### 3. Test suite (`python -m pytest -q`)
 ```
-11 passed
+12 passed
 ```
 
 ### 4. Whitespace / conflict-marker check
@@ -77,6 +92,8 @@ git diff --check   # clean
 | `mutation/settlement.negative-amount.json` | `pattern` | `$.amount.value` |
 | `mutation/cart.zero-quantity-line.json` | `minimum` | `$.lines[0].quantity` |
 | `negative/order.missing-contract-version.json` | `required` | `$` |
+| `mutation/intent.verdict-extension-key.json` | `not` | `$.extensions` |
+| `mutation/intent.nested-authority-extension.json` | `anyOf` | `$.extensions.meta` |
 
 ## Claims supported (this head)
 - The vocabulary parses, self-validates, and rejects malformed/mutated instances
@@ -98,6 +115,13 @@ git diff --check   # clean
 - `constraints-ci.txt` pins exact versions but does not yet use
   `--require-hashes`; artifact-hash verification is a documented follow-up.
 - This vocabulary is a local, versioned convention — not an upstream standard.
+
+## Independent adversarial verification
+Beyond the lane's own fixtures, an independent probe built validators straight off
+the repo registry and hit the `$defs` / top-level schemas with 23 hand-crafted
+cases (the 7 defect classes + verdict/authority `extensions` smuggle + benign
+controls). Result: **23/23 behaved as required** — every defect rejected at the
+intended keyword/path, every benign control accepted.
 
 ## Provenance note
 This report was produced by re-running the full gate from a clean venv after the

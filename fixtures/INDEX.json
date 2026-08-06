@@ -151,6 +151,18 @@
       "schema": "cart.schema.json",
       "base": "positive/cart.valid.json",
       "expect": { "keyword": "minimum", "path": "$.lines[0].quantity" }
+    },
+    {
+      "file": "mutation/intent.verdict-extension-key.json",
+      "schema": "intent.schema.json",
+      "base": "positive/intent.valid.json",
+      "expect": { "keyword": "not", "path": "$.extensions", "message_contains": "verdict" }
+    },
+    {
+      "file": "mutation/intent.nested-authority-extension.json",
+      "schema": "intent.schema.json",
+      "base": "positive/intent.valid.json",
+      "expect": { "keyword": "anyOf", "path": "$.extensions.meta", "message_contains": "object_type" }
     }
   ]
 }

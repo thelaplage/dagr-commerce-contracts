@@ -43,8 +43,8 @@
       "file": "schemas/commerce/v0.1/common.schema.json",
       "id": "https://contracts.dagr-commerce.dev/schema/v0.1/common.schema.json",
       "title": "Commerce Contracts Common Definitions v0.1",
-      "sha256": "bce1213e255c23c7848d45ad762fdbfd5393ee2ee889460c022bd01bd279761b",
-      "byte_length": 14955
+      "sha256": "08e84368dfdb3e8c318eccddf59f79fcafffbeb7cc62cd3d90c04966c0a3bbda",
+      "byte_length": 15456
     },
     {
       "file": "schemas/commerce/v0.1/evidence-envelope.schema.json",

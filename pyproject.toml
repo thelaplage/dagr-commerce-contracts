@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dagr-commerce-contracts"
-version = "0.1.0"
+version = "0.2.0"
 description = "Protocol-neutral, language-neutral commerce evidence vocabulary (JSON Schema Draft 2020-12 contracts, fixtures, and a reference validator)."
 readme = "README.md"
 requires-python = ">=3.9"

@@ -234,10 +234,10 @@
     },
     "safe_extension_key": {
       "title": "Safe extension key",
-      "description": "An extension property name that does not resemble a sensitive-material field name. The match is case-insensitive and boundary-aware (word boundaries are start/end of the key or an underscore/hyphen), so \"pan\" is rejected but \"japan\"/\"span\" are not. Keys resembling card/pan/cvv/cvc/bearer/secret/password/private_key/mandate_token/account_number/iban/routing/ssn/api_key/token and similar are rejected so credentials cannot be smuggled through the extensions bucket.",
+      "description": "An extension property name that does not resemble a sensitive-material field name, an aggregate-verdict field, or a native-protocol/ARCS-authority field. The match is case-insensitive and boundary-aware (word boundaries are start/end of the key or an underscore/hyphen), so \"pan\" is rejected but \"japan\"/\"span\" are not. Rejected key families: (a) credentials — card/pan/cvv/cvc/bearer/secret/password/private_key/mandate_token/account_number/iban/routing/ssn/api_key/token; (b) aggregate verdicts — verdict/trusted/safe/compliant/verified/governed; (c) authority impersonation — object_type/envelope_kind/arcs_receipt/verifier_verdict/receipt/attestation. This prevents the extensions bucket from reintroducing, at any nesting depth, raw credentials, an aggregate verdict, or a field that impersonates native-protocol or ARCS authority.",
       "type": "string",
       "not": {
-        "pattern": "(?i)(^|[_-])(card|pan|cvv|cvc|bearer|secret|client_secret|password|passwd|private_key|privatekey|mandate_token|account_number|iban|routing|ssn|api_key|apikey|access_token|refresh_token|token)($|[_-])"
+        "pattern": "(?i)(^|[_-])(card|pan|cvv|cvc|bearer|secret|client_secret|password|passwd|private_key|privatekey|mandate_token|account_number|iban|routing|ssn|api_key|apikey|access_token|refresh_token|token|verdict|trusted|safe|compliant|verified|governed|object_type|envelope_kind|arcs_receipt|verifier_verdict|receipt|attestation)($|[_-])"
       }
     },
     "safe_value": {
