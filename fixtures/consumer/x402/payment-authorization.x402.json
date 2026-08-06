@@ -1,0 +1,30 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.2.0",
+  "created_at": "2026-08-06T10:01:00Z",
+  "authorization_id": "x402-payauth-0001",
+  "amount": { "currency_code": "USD", "value": "5.00" },
+  "payer_ref": { "ref_type": "principal", "id": "principal-x402-buyer-001" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-x402-001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "x402-preq-0001" },
+  "one_time": true,
+  "expires_at": "2026-08-06T10:31:00Z",
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "payment_credential",
+    "method": "tokenized_reference",
+    "hint": "x4242"
+  },
+  "native": {
+    "protocol_family": "x402",
+    "protocol_version": "1",
+    "native_object_type": "PaymentPayload",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-06T10:01:00Z"
+  }
+}

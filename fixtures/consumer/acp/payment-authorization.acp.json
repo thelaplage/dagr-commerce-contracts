@@ -1,0 +1,29 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.2.0",
+  "created_at": "2026-08-06T11:05:00Z",
+  "authorization_id": "acp-payauth-0001",
+  "amount": { "currency_code": "USD", "value": "20.00" },
+  "payer_ref": { "ref_type": "principal", "id": "agent-acp-buyer-001" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-acp-001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "acp-preq-0001" },
+  "one_time": true,
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "bearer_token",
+    "method": "custody_reference",
+    "custody": { "disposition": "external_store", "location_hint": "acp-vault-ref-0001" }
+  },
+  "native": {
+    "protocol_family": "ACP",
+    "protocol_version": "1.0",
+    "native_object_type": "ConfirmationObject",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6e6"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-06T11:05:00Z"
+  }
+}

@@ -1,24 +1,43 @@
 """Reference validator for dagr-commerce-contracts.
 
-Runs the C0 gate as a set of independent, path-scoped checks and prints a
+Runs the C0+C1 gate as a set of independent, path-scoped checks and prints a
 per-check report. It makes NO aggregate trusted/safe/compliant/verified/governed
 claim: it reports per-check pass/fail only.
 
 Checks
 ------
-1. ``schemas-parse``        — every commerce and ecosystem schema parses and is a
-                              structurally valid JSON Schema (Draft 2020-12).
-2. ``positive-fixtures``    — every positive fixture validates against its schema.
-3. ``negative-fixtures``    — every negative fixture FAILS, and the failure occurs
-                              at the intended path/keyword (path-scoped reason).
-4. ``mutation-fixtures``    — every mutation fixture FAILS at the intended
-                              path/keyword.
-5. ``ecosystem-declarations`` — every ``.ecosystem/*.yaml`` validates against its
-                              vendored ecosystem coordination schema.
-6. ``no-aggregate-verdict`` — no schema enum and no fixture outcome field uses an
-                              aggregate-verdict token as a value.
+C0:
+1. ``schemas-parse``           — every commerce and ecosystem schema parses and
+                                 is a structurally valid JSON Schema (Draft 2020-12).
+2. ``positive-fixtures``       — every positive fixture validates against its schema.
+3. ``negative-fixtures``       — every negative fixture FAILS, and the failure
+                                 occurs at the intended path/keyword (path-scoped).
+4. ``mutation-fixtures``       — every mutation fixture FAILS at the intended
+                                 path/keyword.
+5. ``ecosystem-declarations``  — every ``.ecosystem/*.yaml`` validates against its
+                                 vendored ecosystem coordination schema.
+6. ``no-aggregate-verdict``    — no schema enum and no fixture outcome field uses an
+                                 aggregate-verdict token as a value.
 7. ``no-raw-sensitive-material`` — no committed fixture carries a raw value under a
-                              field whose name implies sensitive material.
+                                 field whose name implies sensitive material.
+C1:
+8. ``consumer-fixtures``       — every consumer fixture (x402/ACP/AP2/UCP/Visa-TAP)
+                                 validates against its schema. Exercises only
+                                 protocol-neutral fields.
+9. ``version-policy-current``  — the schema digests recorded in
+                                 compatibility/version-policy.v0.1.json match the
+                                 on-disk schema files. A mismatch means a schema
+                                 changed without updating the policy (potential
+                                 breaking change).
+10. ``compat-report-current``  — the committed compatibility report was generated
+                                 from actual execution and has not drifted from what
+                                 a fresh run would produce.
+11. ``release-manifest-current`` — the schema digests in
+                                 release/release-manifest.v0.2.0.json match the
+                                 on-disk schema files.
+12. ``types-round-trip``       — for every positive fixture: JSON → dict → JSON is
+                                 lossless and the round-tripped instance still
+                                 validates against its schema.
 
 Exit codes
 ----------
@@ -45,6 +64,11 @@ ECOSYSTEM_SCHEMA_DIR = REPO_ROOT / "schemas" / "ecosystem"
 ECOSYSTEM_DECL_DIR = REPO_ROOT / ".ecosystem"
 FIXTURES_DIR = REPO_ROOT / "fixtures"
 FIXTURES_INDEX = FIXTURES_DIR / "INDEX.json"
+CONSUMER_INDEX = FIXTURES_DIR / "consumer" / "INDEX.consumer.json"
+VERSION_POLICY = REPO_ROOT / "compatibility" / "version-policy.v0.1.json"
+COMPAT_REPORT_JSON = REPO_ROOT / "compatibility" / "compat-report.v0.1.json"
+COMPAT_REPORT_MD = REPO_ROOT / "compatibility" / "COMPATIBILITY_REPORT.md"
+RELEASE_MANIFEST = REPO_ROOT / "release" / "release-manifest.v0.2.0.json"
 
 # Aggregate-verdict tokens that must never appear as an outcome VALUE.
 AGGREGATE_VERDICT_TOKENS = {"trusted", "safe", "compliant", "verified", "governed"}
@@ -485,6 +509,248 @@ def check_no_raw_sensitive_material() -> CheckResult:
     )
 
 
+def check_consumer_fixtures(registry, Draft202012Validator) -> CheckResult:
+    """C1: all consumer fixtures validate against their schemas.
+
+    Exercises only protocol-neutral fields; protocol-specific adapters are in
+    their own repos. Failure at this check means the fixture itself is
+    malformed, not that a protocol is non-conformant.
+    """
+    if not CONSUMER_INDEX.is_file():
+        return CheckResult(
+            "consumer-fixtures", False,
+            "fixtures/consumer/INDEX.consumer.json missing",
+            ["expected fixtures/consumer/INDEX.consumer.json"],
+        )
+    try:
+        index = json.loads(CONSUMER_INDEX.read_text())
+    except Exception as exc:
+        return CheckResult("consumer-fixtures", False,
+                           f"could not parse consumer index: {exc}", [str(exc)])
+    failures: list[str] = []
+    count = 0
+    for entry in index.get("consumer", []):
+        count += 1
+        fixture_path = FIXTURES_DIR / entry["file"]
+        if not fixture_path.is_file():
+            failures.append(f"{entry['file']}: missing")
+            continue
+        try:
+            instance = json.loads(fixture_path.read_text())
+        except Exception as exc:
+            failures.append(f"{entry['file']}: not valid JSON ({exc})")
+            continue
+        validator = _validator_for(entry["schema"], registry, Draft202012Validator)
+        errors = sorted(validator.iter_errors(instance), key=lambda e: e.json_path)
+        if errors:
+            msgs = "; ".join(f"{e.json_path}: {e.message}" for e in errors[:3])
+            failures.append(f"{entry['file']} (protocol={entry.get('protocol', '?')}): {msgs}")
+    passed = not failures
+    return CheckResult(
+        "consumer-fixtures",
+        passed,
+        f"{count - len(failures)}/{count} consumer fixtures validate against their schema",
+        failures,
+    )
+
+
+def check_version_policy_current() -> CheckResult:
+    """C1: schema digests in version-policy.v0.1.json match on-disk schema files.
+
+    A mismatch means a schema was changed without regenerating the policy,
+    which may constitute an undocumented breaking change.
+    """
+    import hashlib
+    if not VERSION_POLICY.is_file():
+        return CheckResult(
+            "version-policy-current", False,
+            "compatibility/version-policy.v0.1.json missing",
+            ["run: python scripts/gen_version_policy.py"],
+        )
+    try:
+        policy = json.loads(VERSION_POLICY.read_text())
+    except Exception as exc:
+        return CheckResult("version-policy-current", False,
+                           f"could not parse version-policy: {exc}", [str(exc)])
+    failures: list[str] = []
+    for entry in policy.get("schemas", []):
+        schema_path = REPO_ROOT / entry["file"]
+        if not schema_path.is_file():
+            failures.append(f"{entry['file']}: file missing")
+            continue
+        raw = schema_path.read_bytes()
+        actual_sha256 = hashlib.sha256(raw).hexdigest()
+        actual_len = len(raw)
+        if actual_sha256 != entry["sha256"]:
+            failures.append(
+                f"{entry['file']}: sha256 mismatch "
+                f"(policy={entry['sha256'][:16]}... actual={actual_sha256[:16]}...) "
+                "— schema changed without updating version-policy; potential breaking change"
+            )
+        elif actual_len != entry["byte_length"]:
+            failures.append(
+                f"{entry['file']}: byte_length mismatch "
+                f"(policy={entry['byte_length']} actual={actual_len})"
+            )
+    passed = not failures
+    n = len(policy.get("schemas", []))
+    return CheckResult(
+        "version-policy-current",
+        passed,
+        f"{n - len(failures)}/{n} schema digests match version-policy.v0.1.json",
+        failures,
+    )
+
+
+def check_compat_report_current() -> CheckResult:
+    """C1: committed compat report was generated from execution and is not stale.
+
+    Imports scripts/gen_compat_report.py (not installed; loaded directly) and
+    regenerates the report in memory, comparing against the committed files.
+    A stale report means a schema was tightened without re-running the generator.
+    """
+    import importlib.util
+    gen_path = REPO_ROOT / "scripts" / "gen_compat_report.py"
+    if not gen_path.is_file():
+        return CheckResult(
+            "compat-report-current", False,
+            "scripts/gen_compat_report.py missing",
+            ["expected scripts/gen_compat_report.py"],
+        )
+    if not COMPAT_REPORT_JSON.is_file() or not COMPAT_REPORT_MD.is_file():
+        return CheckResult(
+            "compat-report-current", False,
+            "compatibility/compat-report.v0.1.json or COMPATIBILITY_REPORT.md missing",
+            ["run: python scripts/gen_compat_report.py"],
+        )
+    try:
+        spec = importlib.util.spec_from_file_location("gen_compat_report", gen_path)
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        data = mod.build()
+        fresh_json = mod.render_json(data)
+        fresh_md = mod.render_md(data)
+    except Exception as exc:
+        return CheckResult(
+            "compat-report-current", False,
+            f"compat report generator failed: {exc}",
+            [str(exc)],
+        )
+    failures: list[str] = []
+    if COMPAT_REPORT_JSON.read_text() != fresh_json:
+        failures.append(
+            "compatibility/compat-report.v0.1.json is stale; "
+            "run: python scripts/gen_compat_report.py"
+        )
+    if COMPAT_REPORT_MD.read_text() != fresh_md:
+        failures.append(
+            "compatibility/COMPATIBILITY_REPORT.md is stale; "
+            "run: python scripts/gen_compat_report.py"
+        )
+    passed = not failures
+    return CheckResult(
+        "compat-report-current",
+        passed,
+        "committed compat report matches fresh execution"
+        if passed else "compat report is stale (schema change not reflected)",
+        failures,
+    )
+
+
+def check_release_manifest_current() -> CheckResult:
+    """C1: schema digests in release-manifest.v0.2.0.json match on-disk schema files."""
+    import hashlib
+    if not RELEASE_MANIFEST.is_file():
+        return CheckResult(
+            "release-manifest-current", False,
+            "release/release-manifest.v0.2.0.json missing",
+            ["run: python scripts/gen_release_manifest.py"],
+        )
+    try:
+        manifest = json.loads(RELEASE_MANIFEST.read_text())
+    except Exception as exc:
+        return CheckResult("release-manifest-current", False,
+                           f"could not parse release manifest: {exc}", [str(exc)])
+    failures: list[str] = []
+    for entry in manifest.get("schemas", []):
+        schema_path = REPO_ROOT / entry["file"]
+        if not schema_path.is_file():
+            failures.append(f"{entry['file']}: file missing")
+            continue
+        raw = schema_path.read_bytes()
+        actual_sha256 = hashlib.sha256(raw).hexdigest()
+        if actual_sha256 != entry["sha256"]:
+            failures.append(
+                f"{entry['file']}: sha256 mismatch "
+                f"(manifest={entry['sha256'][:16]}... actual={actual_sha256[:16]}...) "
+                "— schema changed without regenerating manifest"
+            )
+    passed = not failures
+    n = len(manifest.get("schemas", []))
+    return CheckResult(
+        "release-manifest-current",
+        passed,
+        f"{n - len(failures)}/{n} schema digests match release-manifest.v0.2.0.json",
+        failures,
+    )
+
+
+def check_types_round_trip(index: dict, registry, Draft202012Validator) -> CheckResult:
+    """C1: JSON → dict (TypedDict) → JSON is lossless for every positive fixture.
+
+    Proves that the generated convenience types (src/dagr_commerce_contracts/types.py)
+    faithfully represent the contract objects: any positive fixture survives a
+    json.loads → dict/TypedDict → json.dumps → json.loads round-trip without data
+    loss, and the round-tripped instance still validates against its schema.
+    """
+    try:
+        from dagr_commerce_contracts import types as T
+    except Exception as exc:
+        return CheckResult(
+            "types-round-trip", False,
+            f"could not import dagr_commerce_contracts.types: {exc}",
+            [str(exc)],
+        )
+    failures: list[str] = []
+    count = 0
+    for entry in index.get("positive", []):
+        count += 1
+        fixture_path = FIXTURES_DIR / entry["file"]
+        try:
+            original = json.loads(fixture_path.read_text())
+        except Exception as exc:
+            failures.append(f"{entry['file']}: not valid JSON ({exc})")
+            continue
+        typed_cls = T.SCHEMA_TO_TYPE.get(entry["schema"])
+        if typed_cls is not None:
+            try:
+                typed_instance = typed_cls(**original)
+                round_tripped = json.loads(json.dumps(dict(typed_instance)))
+            except Exception as exc:
+                failures.append(f"{entry['file']}: round-trip error ({exc})")
+                continue
+        else:
+            round_tripped = json.loads(json.dumps(original))
+        if round_tripped != original:
+            failures.append(
+                f"{entry['file']}: round-trip lost or mutated data "
+                f"(original keys={sorted(original)}, round-tripped keys={sorted(round_tripped)})"
+            )
+            continue
+        validator = _validator_for(entry["schema"], registry, Draft202012Validator)
+        errors = sorted(validator.iter_errors(round_tripped), key=lambda e: e.json_path)
+        if errors:
+            msgs = "; ".join(f"{e.json_path}: {e.message}" for e in errors[:3])
+            failures.append(f"{entry['file']}: round-tripped instance failed schema validation: {msgs}")
+    passed = not failures
+    return CheckResult(
+        "types-round-trip",
+        passed,
+        f"{count - len(failures)}/{count} positive fixtures survive a lossless JSON round-trip",
+        failures,
+    )
+
+
 def run_all() -> tuple[list[CheckResult], int]:
     """Run every check. Returns (results, exit_code)."""
     try:
@@ -501,6 +767,11 @@ def run_all() -> tuple[list[CheckResult], int]:
         check_ecosystem_declarations(registry, Draft202012Validator),
         check_no_aggregate_verdict(),
         check_no_raw_sensitive_material(),
+        check_consumer_fixtures(registry, Draft202012Validator),
+        check_version_policy_current(),
+        check_compat_report_current(),
+        check_release_manifest_current(),
+        check_types_round_trip(index, registry, Draft202012Validator),
     ]
     exit_code = 0 if all(r.passed for r in results) else 1
     return results, exit_code

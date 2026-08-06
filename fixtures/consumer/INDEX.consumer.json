@@ -1,0 +1,71 @@
+{
+  "description": "Consumer fixture manifest for the dagr-commerce-contracts C1 conformance gate. Each fixture exercises only protocol-neutral fields from the commerce evidence vocabulary; protocol-specific adapters remain in their own repositories. All fixtures must validate against the referenced commerce schema.",
+  "consumer": [
+    {
+      "protocol": "x402",
+      "file": "consumer/x402/payment-requirement.x402.json",
+      "schema": "payment-requirement.schema.json",
+      "note": "x402 HTTP 402 Payment Required — server-side payment requirement projection."
+    },
+    {
+      "protocol": "x402",
+      "file": "consumer/x402/payment-authorization.x402.json",
+      "schema": "payment-authorization.schema.json",
+      "note": "x402 — client payment payload projection; authorization material redacted via tokenized_reference."
+    },
+    {
+      "protocol": "x402",
+      "file": "consumer/x402/settlement.x402.json",
+      "schema": "settlement.schema.json",
+      "note": "x402 — observed payment confirmation projection; state settled_observed (not a verdict)."
+    },
+    {
+      "protocol": "ACP",
+      "file": "consumer/acp/intent.acp.json",
+      "schema": "intent.schema.json",
+      "note": "ACP agent coordination — purchase intent projection; native authorization request referenced by digest."
+    },
+    {
+      "protocol": "ACP",
+      "file": "consumer/acp/payment-authorization.acp.json",
+      "schema": "payment-authorization.schema.json",
+      "note": "ACP — confirmation object projection; bearer token redacted via custody_reference."
+    },
+    {
+      "protocol": "ACP",
+      "file": "consumer/acp/order.acp.json",
+      "schema": "order.schema.json",
+      "note": "ACP — order record projection; native object referenced by digest."
+    },
+    {
+      "protocol": "AP2",
+      "file": "consumer/ap2/intent.ap2.json",
+      "schema": "intent.schema.json",
+      "note": "AP2 — subscribe intent projection; recurring mandate referenced by digest."
+    },
+    {
+      "protocol": "AP2",
+      "file": "consumer/ap2/payment-authorization.ap2.json",
+      "schema": "payment-authorization.schema.json",
+      "note": "AP2 — recurring mandate authorization projection; reusable mandate redacted via custody_reference."
+    },
+    {
+      "protocol": "UCP",
+      "file": "consumer/ucp/payment-requirement.ucp.json",
+      "schema": "payment-requirement.schema.json",
+      "note": "UCP Universal Commerce Protocol — payment challenge projection."
+    },
+    {
+      "protocol": "UCP",
+      "file": "consumer/ucp/payment-authorization.ucp.json",
+      "schema": "payment-authorization.schema.json",
+      "note": "UCP — authorization response projection; credential redacted via digest_only."
+    },
+    {
+      "protocol": "Visa-TAP",
+      "file": "consumer/visa-tap/payment-authorization.visa-tap.json",
+      "schema": "payment-authorization.schema.json",
+      "note": "Visa TAP (Token Authentication Program) — TAP authorization projection; PAN-equivalent redacted via tokenized_reference; raw PAN is structurally absent."
+    }
+  ]
+}
