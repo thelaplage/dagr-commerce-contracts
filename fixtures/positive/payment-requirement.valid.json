@@ -1,0 +1,23 @@
+{
+  "object_type": "payment_requirement",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:07:00Z",
+  "requirement_id": "preq-0001",
+  "amount": { "currency_code": "USD", "value": "10.00" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-101" },
+  "resource_ref": { "ref_type": "resource", "id": "resource-42" },
+  "accepted_methods": ["method-a", "method-b"],
+  "expires_at": "2026-08-05T12:37:00Z",
+  "native": {
+    "protocol_family": "example-native-protocol",
+    "protocol_version": "1.0",
+    "native_object_type": "payment_requirements",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4d4"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-05T12:07:00Z"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.1.0",
+  "authorization_id": "payauth-neg-1",
+  "amount": { "currency_code": "USD", "value": "10.00" },
+  "authorization_material": "PLACEHOLDER-RAW-MATERIAL-not-a-real-credential-and-must-be-rejected"
+}

@@ -1,0 +1,7 @@
+{
+  "object_type": "evidence_envelope",
+  "envelope_kind": "protocol_neutral_evidence_projection",
+  "contract_version": "0.1.0",
+  "envelope_id": "envelope-neg-2",
+  "projections": []
+}

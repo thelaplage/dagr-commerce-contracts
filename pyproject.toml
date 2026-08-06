@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dagr-commerce-contracts"
+version = "0.1.0"
+description = "Protocol-neutral, language-neutral commerce evidence vocabulary (JSON Schema Draft 2020-12 contracts, fixtures, and a reference validator)."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "Apache-2.0" }
+authors = [{ name = "dagr-commerce-contracts maintainers" }]
+keywords = ["json-schema", "commerce", "evidence", "contracts", "protocol-neutral"]
+classifiers = [
+    "License :: OSI Approved :: Apache Software License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries",
+]
+dependencies = [
+    "jsonschema>=4.18",
+    "referencing>=0.30",
+    "PyYAML>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/thelaplage/dagr-commerce-contracts"
+Repository = "https://github.com/thelaplage/dagr-commerce-contracts"
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+
+[project.scripts]
+dagr-commerce-validate = "dagr_commerce_contracts.validate:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+packages = ["dagr_commerce_contracts"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

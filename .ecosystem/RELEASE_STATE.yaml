@@ -1,0 +1,47 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.release-state.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+release_stage: "preview"
+current_version: "0.1.0"
+release_readiness: "ready"
+required_gates:
+  - gate_id: "schemas-parse-and-positive-fixtures-validate"
+    description: "Every commerce schema parses as Draft 2020-12 and validates its positive fixtures."
+    status: "passed"
+    required_for_release: true
+  - gate_id: "negative-and-mutation-fixtures-fail-path-scoped"
+    description: "Negative and mutation fixtures fail for the intended path/keyword."
+    status: "passed"
+    required_for_release: true
+  - gate_id: "ecosystem-declarations-schema-valid"
+    description: "All 13 .ecosystem/*.yaml validate against the vendored arcs-ecosystem-kit v0.1 schemas."
+    status: "passed"
+    required_for_release: true
+  - gate_id: "no-aggregate-verdict"
+    description: "No schema enum and no fixture outcome uses an aggregate trusted/safe/compliant/verified/governed value."
+    status: "passed"
+    required_for_release: true
+  - gate_id: "no-raw-sensitive-material"
+    description: "No positive fixture carries a raw value under a sensitive-looking field."
+    status: "passed"
+    required_for_release: true
+passed_gates:
+  - "schemas-parse-and-positive-fixtures-validate"
+  - "negative-and-mutation-fixtures-fail-path-scoped"
+  - "ecosystem-declarations-schema-valid"
+  - "no-aggregate-verdict"
+  - "no-raw-sensitive-material"
+blocking_issues: []
+dependent_releases:
+  - repository: "arcs-ecosystem-kit"
+    version: "v0.1"
+    relationship: "informs"
+compatibility_status:
+  claim_status: "validated"
+  summary: >-
+    The commerce vocabulary and the 13 .ecosystem declarations pass this
+    repository's reference validator at this head. This is a structural-schema
+    claim only; it is not ARCS conformance and not an aggregate
+    trusted/safe/compliant/verified/governed verdict.
+release_notes_ref: "BUILD_REPORT.md"
+last_reviewed: "2026-08-05"

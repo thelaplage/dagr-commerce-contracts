@@ -1,0 +1,508 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.capability-bindings.v0.1.schema.json",
+  "title": "ARCS Ecosystem Capability Bindings v0.1",
+  "description": "Projects capability bindings to external semantic authorities or unresolved authority slots. The ecosystem kit does not own canonical capability semantics.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "native_registry_refs",
+    "declarations"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.capability-bindings.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_registry_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/native_registry_ref"
+      }
+    },
+    "declarations": {
+      "type": "object",
+      "required": [
+        "defines",
+        "implements",
+        "consumes",
+        "extends",
+        "deprecates"
+      ],
+      "properties": {
+        "defines": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability_binding"
+          }
+        },
+        "implements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability_binding"
+          }
+        },
+        "consumes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability_binding"
+          }
+        },
+        "extends": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability_binding"
+          }
+        },
+        "deprecates": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/capability_binding"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "authority_requirement": {
+      "type": "object",
+      "required": [
+        "authority_repository",
+        "authority_artifact_ref",
+        "requirement",
+        "assertion_status"
+      ],
+      "properties": {
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "requirement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        }
+      },
+      "additionalProperties": false
+    },
+    "capability_binding": {
+      "type": "object",
+      "required": [
+        "capability_ref",
+        "constitutional_layer",
+        "version",
+        "semantic_authority",
+        "stability",
+        "relationship",
+        "assertion_status",
+        "reachability",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "capability_ref": {
+          "type": "string",
+          "minLength": 1,
+          "description": "External or local capability identifier. Semantics remain with semantic_authority."
+        },
+        "constitutional_layer": {
+          "$ref": "#/$defs/layer_id"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "semantic_authority": {
+          "$ref": "#/$defs/semantic_authority_ref"
+        },
+        "stability": {
+          "$ref": "#/$defs/stability"
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "reachability": {
+          "$ref": "#/$defs/reachability_status"
+        },
+        "native_mapping": {
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/native_mapping"
+            }
+          ]
+        },
+        "purpose_sensitivity": {
+          "$ref": "#/$defs/purpose_sensitivity"
+        },
+        "authority_requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/authority_requirement"
+          }
+        },
+        "evidence_profile_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/external_reference"
+          }
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "ownership_transition": {
+          "$ref": "#/$defs/ownership_transition"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "external_reference": {
+      "type": "object",
+      "required": [
+        "id",
+        "semantic_authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "semantic_authority": {
+          "$ref": "#/$defs/semantic_authority_ref"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementation_role": {
+      "type": "string",
+      "enum": [
+        "semantic_authority",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementation",
+        "consumer",
+        "producer",
+        "emitter",
+        "provider",
+        "adapter",
+        "runtime_binding",
+        "verifier_counterpart",
+        "operational_owner",
+        "schema_coordination",
+        "planned_role",
+        "not_applicable"
+      ]
+    },
+    "integrity_metadata": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratification_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "layer_id": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ]
+    },
+    "native_mapping": {
+      "type": "object",
+      "required": [
+        "implementation_role",
+        "assertion_status"
+      ],
+      "properties": {
+        "implementation_role": {
+          "$ref": "#/$defs/implementation_role"
+        },
+        "native_identifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "native_registry_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority",
+        "summary_role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "ownership_transition": {
+      "type": "object",
+      "required": [
+        "current_owner",
+        "candidate_verified",
+        "migration_authorized"
+      ],
+      "properties": {
+        "current_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_verified": {
+          "type": "boolean"
+        },
+        "migration_authorized": {
+          "type": "boolean"
+        },
+        "migration_record_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "purpose_sensitivity": {
+      "type": "string",
+      "enum": [
+        "public_safe",
+        "internal",
+        "restricted",
+        "confidential",
+        "sensitive",
+        "regulated"
+      ]
+    },
+    "reachability_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "verified",
+        "pending_policy",
+        "not_reachable"
+      ]
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "semantic_authority_ref": {
+      "type": "object",
+      "required": [
+        "repository",
+        "status"
+      ],
+      "properties": {
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "resolved",
+            "unresolved",
+            "distributed",
+            "historical",
+            "ratified",
+            "canonical"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "stability": {
+      "type": "string",
+      "enum": [
+        "experimental",
+        "preview",
+        "stable",
+        "deprecated",
+        "frozen"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    }
+  }
+}

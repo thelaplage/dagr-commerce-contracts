@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/merchant.schema.json",
+  "title": "Merchant v0.1",
+  "description": "A protocol-neutral projection of a merchant/seller party. Carries no merchant-of-record binding and requires no specific PSP, rail, or platform. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "merchant_ref"],
+  "properties": {
+    "object_type": { "const": "merchant" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "merchant_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "display_name": { "type": "string", "maxLength": 256 },
+    "jurisdiction_hint": {
+      "description": "Optional, free-text, non-authoritative jurisdiction hint. Not a compliance determination.",
+      "type": "string",
+      "maxLength": 128
+    },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

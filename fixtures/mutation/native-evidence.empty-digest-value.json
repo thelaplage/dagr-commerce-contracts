@@ -1,0 +1,12 @@
+{
+  "object_type": "native_evidence",
+  "contract_version": "0.1.0",
+  "evidence_id": "evidence-0001",
+  "native": {
+    "protocol_family": "example-native-protocol",
+    "protocol_version": "1.0",
+    "native_object_type": "settlement_response",
+    "digest": { "algorithm": "sha-256", "encoding": "hex", "value": "" },
+    "custody": { "disposition": "external_store", "location_hint": "store/1" }
+  }
+}

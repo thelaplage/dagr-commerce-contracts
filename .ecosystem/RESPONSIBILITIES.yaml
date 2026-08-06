@@ -1,0 +1,49 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.responsibilities.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+responsibilities:
+  - id: "maintain-commerce-vocabulary"
+    summary: "Maintain the protocol-neutral commerce evidence vocabulary (schemas/commerce/v0.1) and keep it neutral, closed, and free of aggregate verdicts."
+    constitutional_layer: "L10"
+    current_owner: "dagr-commerce-contracts"
+    candidate_owner: null
+    candidate_verified: false
+    migration_authorized: false
+    relationship: "operates"
+    assertion_status: "validated"
+    evidence_refs:
+      - id: "commerce-schemas"
+        path: "schemas/commerce/v0.1/"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+  - id: "maintain-reference-validator-and-fixtures"
+    summary: "Keep the reference validator and positive/negative/mutation fixtures green from a clean environment, with path-scoped failure reasons."
+    constitutional_layer: "L10"
+    current_owner: "dagr-commerce-contracts"
+    candidate_owner: null
+    candidate_verified: false
+    migration_authorized: false
+    relationship: "validates"
+    assertion_status: "validated"
+    evidence_refs:
+      - id: "validator"
+        path: "src/dagr_commerce_contracts/validate.py"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+      - id: "fixtures-index"
+        path: "fixtures/INDEX.json"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+unowned_responsibilities:
+  - concern: "ARCS conformance determination and receipt semantics"
+    authority_repository: "arcs-standard"
+    reason: "The evidence-envelope is a projection, not an ARCS receipt; ARCS conformance is arcs-standard's authority and is neither implemented nor verified here."
+  - concern: "protocol-native semantics for x402/ACP/AP2/UCP/Visa-TAP"
+    authority_repository: null
+    reason: "Owned by each protocol's upstream and by its proof pack; this repository holds only the protocol-neutral projection shape."
+  - concern: "verifier verdicts and DAGR transport/binding"
+    authority_repository: null
+    reason: "No new DAGR binding or verifier verdict is defined here; those remain with the DAGR/ARCS repositories."
+escalation_paths: []
+native_registry_refs: []
+notes: "Every responsibility here is about the shape of the shared vocabulary and its checks, not about any protocol's native meaning."

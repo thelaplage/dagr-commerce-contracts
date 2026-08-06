@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/payment-authorization.schema.json",
+  "title": "Payment Authorization v0.1",
+  "description": "A protocol-neutral projection of an authorization to pay. The authorizing material (signed payload, token, mandate) is never embedded raw: it is carried as a redaction marker or a protocol-native reference. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "authorization_id", "authorization_material"],
+  "properties": {
+    "object_type": { "const": "payment_authorization" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authorization_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "payer_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "payee_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "requirement_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "constraints_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "one_time": { "type": "boolean" },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "authorization_material": {
+      "description": "The authorizing material by reference only. Never a raw token, key, PAN, or reusable credential.",
+      "oneOf": [
+        { "$ref": "common.schema.json#/$defs/redaction_marker" },
+        { "$ref": "common.schema.json#/$defs/protocol_native_reference" }
+      ]
+    },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,426 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.repository.v0.1.schema.json",
+  "title": "ARCS Ecosystem Repository Declaration v0.1",
+  "description": "Coordinates repository identity as a replaceable implementation container. Constitutional layer, authority posture, lifecycle, substrate/surface role, implementation role, and conformance posture are separate axes.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "constitutional_roles",
+    "authority",
+    "mission",
+    "owned_concerns",
+    "unowned_concerns",
+    "ownership",
+    "status_metadata"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.repository.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "object",
+      "required": [
+        "name",
+        "types",
+        "lifecycle_state"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]*[a-z0-9]$"
+        },
+        "types": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/repository_type"
+          }
+        },
+        "lifecycle_state": {
+          "$ref": "#/$defs/lifecycle_state"
+        },
+        "owning_layer": {
+          "$ref": "#/$defs/owning_layer",
+          "description": "Legacy descriptive layer label retained separately from constitutional_roles."
+        },
+        "substrate_surface_role": {
+          "$ref": "#/$defs/substrate_surface_role"
+        },
+        "canonical_repository_url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "doctrine": {
+          "type": "object",
+          "required": [
+            "canonical_doctrine_repo",
+            "pinned_doctrine_release",
+            "last_doctrine_sync"
+          ],
+          "properties": {
+            "canonical_doctrine_repo": {
+              "type": "string",
+              "minLength": 1
+            },
+            "pinned_doctrine_release": {
+              "type": "string",
+              "minLength": 1
+            },
+            "last_doctrine_sync": {
+              "$ref": "#/$defs/date"
+            },
+            "doctrine_release": {
+              "type": "string",
+              "minLength": 1
+            },
+            "release_revision": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "constitutional_roles": {
+      "type": "object",
+      "required": [
+        "primary_layer",
+        "secondary_layers"
+      ],
+      "properties": {
+        "primary_layer": {
+          "$ref": "#/$defs/layer_id"
+        },
+        "secondary_layers": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/layer_id"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "status",
+        "canonical_doctrine_repository"
+      ],
+      "properties": {
+        "status": {
+          "$ref": "#/$defs/repository_authority_status",
+          "description": "Authority posture for this repository. This is not repository type, lifecycle, or conformance status."
+        },
+        "canonical_doctrine_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "semantic_authority_for": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "implementation_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/implementation_role"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "mission": {
+      "type": "string",
+      "minLength": 20
+    },
+    "owned_concerns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "unowned_concerns": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ownership": {
+      "type": "object",
+      "required": [
+        "owners"
+      ],
+      "properties": {
+        "owners": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name",
+              "role"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "type": "string",
+                "minLength": 1
+              },
+              "contact": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "maintainers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "status_metadata": {
+      "type": "object",
+      "required": [
+        "claim_status",
+        "last_reviewed"
+      ],
+      "properties": {
+        "claim_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "last_reviewed": {
+          "$ref": "#/$defs/date"
+        },
+        "known_drifts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "requires_threat_audit": {
+          "type": "boolean"
+        },
+        "planned_roles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "validator",
+              "index_generator",
+              "lane_initializer",
+              "collision_detector",
+              "dependency_impact_engine",
+              "dashboard",
+              "github_app"
+            ]
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "implementation_role": {
+      "type": "string",
+      "enum": [
+        "semantic_authority",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementation",
+        "consumer",
+        "producer",
+        "emitter",
+        "provider",
+        "adapter",
+        "runtime_binding",
+        "verifier_counterpart",
+        "operational_owner",
+        "schema_coordination",
+        "planned_role",
+        "not_applicable"
+      ]
+    },
+    "integrity_metadata": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratification_record_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "layer_id": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ]
+    },
+    "lifecycle_state": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "doctrine_ready",
+        "reference",
+        "proof_pack",
+        "preview",
+        "stable",
+        "maintenance",
+        "superseded",
+        "archived"
+      ]
+    },
+    "owning_layer": {
+      "type": "string",
+      "enum": [
+        "doctrine",
+        "schema_coordination",
+        "model",
+        "runtime",
+        "runtime_binding",
+        "adapter",
+        "verifier",
+        "viewer",
+        "proof_pack",
+        "policy_pack",
+        "product",
+        "reference",
+        "operations"
+      ]
+    },
+    "repository_authority_status": {
+      "type": "string",
+      "enum": [
+        "doctrine_authority",
+        "semantic_authority",
+        "distributed_authority",
+        "unresolved_authority",
+        "implementation_support",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementation",
+        "consumer",
+        "producer",
+        "verifier_counterpart",
+        "operational_owner",
+        "archived_noncanonical"
+      ]
+    },
+    "repository_type": {
+      "type": "string",
+      "enum": [
+        "doctrine",
+        "standard",
+        "schema",
+        "model",
+        "runtime",
+        "runtime_binding",
+        "adapter",
+        "verifier",
+        "viewer",
+        "proof_pack",
+        "policy_pack",
+        "product",
+        "reference_app",
+        "reference_repository",
+        "tooling",
+        "schema_source",
+        "validator",
+        "index_generator",
+        "lane_initializer"
+      ]
+    },
+    "substrate_surface_role": {
+      "type": "string",
+      "enum": [
+        "substrate",
+        "surface",
+        "coordination",
+        "not_applicable"
+      ]
+    }
+  }
+}

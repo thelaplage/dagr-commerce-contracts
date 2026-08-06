@@ -1,0 +1,30 @@
+{
+  "object_type": "native_evidence",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:13:00Z",
+  "evidence_id": "evidence-0001",
+  "native": {
+    "protocol_family": "example-native-protocol",
+    "protocol_version": "1.0",
+    "native_object_type": "settlement_response",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6f6"
+    },
+    "custody": {
+      "disposition": "external_store",
+      "location_hint": "evidence-store/native/settlement_response/0001",
+      "byte_length": 512,
+      "media_type": "application/json"
+    },
+    "redactions": [
+      { "redacted": true, "material_class": "bearer_token", "method": "omitted" }
+    ],
+    "captured_at": "2026-08-05T12:13:00Z"
+  },
+  "subject_ref": { "ref_type": "settlement", "id": "settle-0001" },
+  "observations": [
+    { "check_id": "native.digest_present", "path": "$.native.digest", "state": "satisfied" }
+  ]
+}

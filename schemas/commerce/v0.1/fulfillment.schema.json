@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/fulfillment.schema.json",
+  "title": "Fulfillment v0.1",
+  "description": "A protocol-neutral projection of an observed fulfillment/delivery event. State is an operational observation including an explicit uncertain state; delivery atomicity relative to settlement is preserved by keeping settlement and fulfillment as distinct objects. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "fulfillment_id", "fulfillment_state"],
+  "properties": {
+    "object_type": { "const": "fulfillment" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "fulfillment_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "order_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "fulfillment_state": {
+      "type": "string",
+      "enum": ["pending", "delivered_observed", "failed_observed", "partial_observed", "uncertain"]
+    },
+    "delivery_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

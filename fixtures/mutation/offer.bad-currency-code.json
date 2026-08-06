@@ -1,0 +1,13 @@
+{
+  "object_type": "offer",
+  "contract_version": "0.1.0",
+  "offer_id": "offer-9001",
+  "merchant_ref": { "ref_type": "merchant", "id": "merchant-101" },
+  "items": [
+    {
+      "item_ref": { "ref_type": "sku", "id": "sku-1" },
+      "unit_amount": { "currency_code": "US", "value": "10.00" },
+      "quantity": 1
+    }
+  ]
+}

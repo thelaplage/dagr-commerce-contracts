@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/cart.schema.json",
+  "title": "Cart v0.1",
+  "description": "A protocol-neutral projection of a cart of selected lines with a revision counter. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "cart_id", "lines"],
+  "properties": {
+    "object_type": { "const": "cart" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "cart_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "merchant_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "revision": { "type": "integer", "minimum": 0 },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item_ref", "quantity"],
+        "properties": {
+          "item_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+          "offer_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+          "description": { "type": "string", "maxLength": 1024 },
+          "unit_amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+          "quantity": { "type": "number", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "subtotal": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "total": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

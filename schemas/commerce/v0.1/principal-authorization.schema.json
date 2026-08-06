@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/principal-authorization.schema.json",
+  "title": "Principal Authorization v0.1",
+  "description": "A protocol-neutral projection of a principal authorizing an agent to act within a scope. The authorizing material itself (mandate, signed grant, token) is never embedded raw: it is carried as a redaction marker or a protocol-native reference. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "authorization_id", "principal_ref", "agent_ref", "authorization_material"],
+  "properties": {
+    "object_type": { "const": "principal_authorization" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "authorization_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "principal_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "agent_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "scope": {
+      "description": "Free-text scope grants. Neutral; no specific scope vocabulary is required.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 256 }
+    },
+    "constraints_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "not_before": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "not_after": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "one_time": { "type": "boolean" },
+    "authorization_material": {
+      "description": "The authorizing material by reference only. Never a raw mandate, token, key, or credential.",
+      "oneOf": [
+        { "$ref": "common.schema.json#/$defs/redaction_marker" },
+        { "$ref": "common.schema.json#/$defs/protocol_native_reference" }
+      ]
+    },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

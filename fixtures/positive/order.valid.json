@@ -1,0 +1,10 @@
+{
+  "object_type": "order",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:10:00Z",
+  "order_id": "order-0001",
+  "merchant_ref": { "ref_type": "merchant", "id": "merchant-101" },
+  "cart_ref": { "ref_type": "cart", "id": "cart-5001" },
+  "order_state": "created",
+  "amount": { "currency_code": "USD", "value": "20.00" }
+}

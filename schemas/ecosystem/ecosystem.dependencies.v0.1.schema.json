@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.dependencies.v0.1.schema.json",
+  "title": "ARCS Ecosystem Dependency Declarations v0.1",
+  "description": "Declares repository dependencies by dependency type, contract, version requirement, release criticality, reason, and compatibility notes.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "dependencies"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.dependencies.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "contract_reference": {
+      "type": "object",
+      "required": [
+        "contract_id",
+        "semantic_authority"
+      ],
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "semantic_authority": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "required": [
+        "repository",
+        "dependency_type",
+        "contract",
+        "version_requirement",
+        "required",
+        "required_for_release",
+        "reason"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "dependency_type": {
+          "$ref": "#/$defs/dependency_type"
+        },
+        "contract": {
+          "$ref": "#/$defs/contract_reference"
+        },
+        "version_requirement": {
+          "$ref": "#/$defs/version_requirement"
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "required_for_release": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "compatibility_notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependency_type": {
+      "type": "string",
+      "enum": [
+        "normative",
+        "schema",
+        "implementation",
+        "runtime",
+        "adapter",
+        "validation",
+        "viewer",
+        "proof_pack",
+        "policy",
+        "optional_consumer"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    },
+    "version_requirement": {
+      "type": "object",
+      "oneOf": [
+        {
+          "required": [
+            "exact_version"
+          ]
+        },
+        {
+          "required": [
+            "version_range"
+          ]
+        }
+      ],
+      "properties": {
+        "exact_version": {
+          "$ref": "#/$defs/version"
+        },
+        "version_range": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

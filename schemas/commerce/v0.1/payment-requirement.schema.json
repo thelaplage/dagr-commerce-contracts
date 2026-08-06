@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/payment-requirement.schema.json",
+  "title": "Payment Requirement v0.1",
+  "description": "A protocol-neutral projection of a requirement to pay (e.g. the shared view of a native payment challenge or requirements object). The native requirement is preserved by reference. No specific rail, chain, PSP, or method is required. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "requirement_id", "amount"],
+  "properties": {
+    "object_type": { "const": "payment_requirement" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "requirement_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "payee_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "resource_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "accepted_methods": {
+      "description": "Free-text labels for methods the payer may use. Neutral; listing a method here does not require or endorse any rail.",
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "expires_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

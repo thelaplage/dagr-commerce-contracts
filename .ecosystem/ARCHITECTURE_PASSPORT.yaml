@@ -1,0 +1,105 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.architecture-passport.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+repository_type: "schema"
+authority_status: "implementation_support"
+lifecycle_state: "preview"
+substrate_surface_role: "coordination"
+owning_layer: "schema_coordination"
+constitutional_layers:
+  primary: "L10"
+  secondary: []
+secondary_implementation_roles: []
+mission: "Provide a protocol-neutral commerce evidence vocabulary the protocol proof packs consume by projection, without redefining DAGR, ARCS, protocol-native semantics, or verifier verdicts."
+owned_concerns:
+  - id: "dagr-commerce-contracts.commerce-vocabulary"
+    description: "The protocol-neutral commerce evidence vocabulary (schemas/commerce/v0.1): intent, principal authorization, agent identity, merchant, offer, cart, spend constraints, payment requirement, payment authorization, settlement, order, fulfillment, refund, native evidence, and path-scoped check observations."
+    claim_status: "validated"
+  - id: "dagr-commerce-contracts.evidence-envelope"
+    description: "The protocol-neutral evidence projection/envelope shape that references native payloads by digest/custody and is explicitly not an ARCS receipt or verifier verdict."
+    claim_status: "validated"
+imported_concerns:
+  - id: "ecosystem_coordination_schema_representation"
+    constitutional_layer: "L10"
+    semantic_authority:
+      repository: "arcs-ecosystem-kit"
+      artifact_ref: "schemas/"
+      version: "v0.1"
+      status: "resolved"
+    relationship: "consumes"
+    claim_status: "validated"
+    notes: "The .ecosystem/ declarations validate against vendored arcs-ecosystem-kit v0.1 schemas (schemas/ecosystem/, provenance-pinned)."
+  - id: "ARCS_receipt_semantics_not_owned"
+    constitutional_layer: "L1"
+    semantic_authority:
+      repository: "arcs-standard"
+      artifact_ref: "content/"
+      version: "v1.0"
+      status: "resolved"
+    relationship: "does_not_own"
+    claim_status: "not_evaluated"
+    notes: "Referenced only to mark a boundary: the evidence-envelope is a projection, not an ARCS receipt; ARCS semantics are not implemented or verified here."
+exported_contracts:
+  - contract_id: "dagr-commerce-contracts.commerce-vocabulary.v0.1"
+    version: "0.1.0"
+    owning_layer: "L10"
+    semantic_authority:
+      repository: "dagr-commerce-contracts"
+      artifact_ref: "schemas/commerce/v0.1/"
+      version: "0.1.0"
+      status: "resolved"
+    claim_status: "validated"
+authority_references:
+  - "ecosystem_coordination_schema_representation"
+  - "protocol_neutral_commerce_evidence_vocabulary"
+  - "ARCS_receipt_semantics_not_owned"
+allowed_cross_layer_imports: []
+prohibited_dependencies:
+  - id: "no-aggregate-verdict"
+    description: "No object or report defined here may emit an aggregate trusted/safe/compliant/verified/governed verdict; observations stay per-path/per-check."
+    status: "prohibited"
+    rationale: "Aggregate verdicts are prohibited program-wide; claims must remain path-scoped."
+  - id: "no-protocol-binding"
+    description: "No contract may require a specific commerce protocol, payment rail, chain, PSP, merchant, wallet, or DAGR transport."
+    status: "prohibited"
+    rationale: "The vocabulary is protocol-neutral; binding a protocol would defeat its purpose and overclaim authority."
+  - id: "not-an-arcs-receipt"
+    description: "The evidence-envelope must reference native payloads by digest/custody and must not impersonate an ARCS receipt or a verifier verdict."
+    status: "prohibited"
+    rationale: "Native protocol evidence and ARCS receipts remain authoritative for their own meaning; shared contracts are projections/references only."
+dependencies: []
+extension_points:
+  - id: "object-extensions-bucket"
+    description: "Each core object carries an optional additive `extensions` bucket for protocol-specific data, keeping the core object closed while allowing non-authoritative additions."
+    status: "declared"
+compatibility_guarantees:
+  - scope: "commerce-vocabulary-v0.1.x"
+    description: "v0.1.x changes are additive and non-breaking to positive fixtures; breaking changes require a version bump and a documented migration."
+    claim_status: "declared"
+current_owners:
+  - repository: "dagr-commerce-contracts"
+    role: "schema_coordination"
+candidate_owners: []
+migration:
+  authorized: false
+  record_ref: null
+security_boundary:
+  summary: "This repository ships schemas, fixtures, and a reference validator only. It holds no credentials, runs no network I/O, and takes custody of no sensitive native objects."
+  trusted_inputs:
+    - "local schema and fixture files in this repository"
+  protected_assets: []
+  non_authoritative_for:
+    - "ARCS validity and receipt semantics"
+    - "any DAGR binding, transport, or verifier verdict"
+    - "Counterpedia record semantics"
+    - "any specific commerce protocol, payment rail, chain, PSP, merchant, or wallet"
+non_goals:
+  - "No x402, ACP, AP2, UCP, or Visa TAP adapter implementation."
+  - "No new DAGR binding, ARCS receipt format, verifier verdict, Counterpedia record semantics, or coordination authority."
+  - "No generated SDK surface beyond a mechanically derived convenience layer over the canonical schemas."
+  - "No claim that the shared vocabulary is an upstream standard."
+conformance:
+  declared_level: "A"
+  status: "validated"
+  notes: "Level A here means structural conformance of the .ecosystem declarations to the vendored arcs-ecosystem-kit v0.1 schemas, verified by this repository's reference validator. It is not ARCS conformance and not an aggregate verdict."
+known_exceptions: []

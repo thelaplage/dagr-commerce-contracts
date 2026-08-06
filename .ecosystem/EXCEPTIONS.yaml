@@ -1,0 +1,8 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.exceptions.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+exceptions: []
+# No approved deviations from CONFORMANCE_PROJECTION.yaml are outstanding.
+# The declared gates all pass under the reference validator at this head. If a
+# future deviation or an unresolved governing authority arises, it is recorded
+# here as an open obligation, never as a silently-dropped or not_applicable gate.

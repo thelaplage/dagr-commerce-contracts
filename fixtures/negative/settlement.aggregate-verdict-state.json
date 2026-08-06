@@ -1,0 +1,6 @@
+{
+  "object_type": "settlement",
+  "contract_version": "0.1.0",
+  "settlement_id": "settle-neg-1",
+  "settlement_state": "verified"
+}

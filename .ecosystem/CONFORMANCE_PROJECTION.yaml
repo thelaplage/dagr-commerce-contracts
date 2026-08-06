@@ -1,0 +1,76 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.conformance-projection.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+standard_identifier: "dagr-commerce-contracts.ecosystem-declaration-schema-conformance.v0.1"
+standard_version: "v0.1"
+declared_conformance_level: "A"
+status: "validated"
+relationship: "projects"
+assertion_status: "validated"
+authority_repository: "arcs-ecosystem-kit"
+authority_artifact_ref: "schemas/"
+authority_version: "v0.1"
+native_registry_refs:
+  - id: "dagr-commerce-contracts.conformance.local"
+    path: ".ecosystem/CONFORMANCE_PROJECTION.yaml"
+    authority: "dagr-commerce-contracts"
+    summary_role: "This repository's structural conformance to the vendored arcs-ecosystem-kit v0.1 schemas and to its own reference-validator gate."
+passed_gates:
+  - gate_id: "ecosystem-declarations-schema-valid"
+    description: "Every .ecosystem/*.yaml validates against its vendored arcs-ecosystem-kit v0.1 schema (real Draft 2020-12 validator)."
+    evidence_ref: "src/dagr_commerce_contracts/validate.py"
+    assertion_status: "validated"
+  - gate_id: "schemas-parse-and-positive-fixtures-validate"
+    description: "Every commerce schema parses as Draft 2020-12 and validates its positive fixtures."
+    evidence_ref: "fixtures/INDEX.json"
+    assertion_status: "validated"
+  - gate_id: "negative-and-mutation-fixtures-fail-path-scoped"
+    description: "Negative and mutation fixtures fail for the intended path/keyword."
+    evidence_ref: "fixtures/INDEX.json"
+    assertion_status: "validated"
+  - gate_id: "no-aggregate-verdict"
+    description: "No schema enum and no fixture outcome uses an aggregate trusted/safe/compliant/verified/governed value."
+    evidence_ref: "src/dagr_commerce_contracts/validate.py"
+    assertion_status: "validated"
+  - gate_id: "no-raw-sensitive-material"
+    description: "No positive fixture carries a raw value under a sensitive-looking field."
+    evidence_ref: "src/dagr_commerce_contracts/validate.py"
+    assertion_status: "validated"
+failed_gates: []
+not_applicable_gates:
+  - gate_id: "arcs-receipt-conformance"
+    description: "ARCS receipt validity of the evidence-envelope."
+    evidence_ref: ".ecosystem/BOUNDARIES.yaml"
+    assertion_status: "not_applicable"
+  - gate_id: "independent-verifier-recorded"
+    description: "An independent verifier reproduces a governed proof run."
+    evidence_ref: ".ecosystem/RESPONSIBILITIES.yaml"
+    assertion_status: "not_applicable"
+test_command_refs:
+  - id: "reference-validator"
+    command: "python3 -m dagr_commerce_contracts.validate"
+    assertion_status: "validated"
+    notes: "Runs from src/ on the committed schemas, fixtures, and .ecosystem declarations; requires jsonschema, referencing, and PyYAML. Prints per-check, path-scoped results and a non-zero exit on any content failure."
+  - id: "pytest"
+    command: "python3 -m pytest -q"
+    assertion_status: "validated"
+    notes: "Wraps the reference-validator checks as individual test cases."
+proof_pack_refs: []
+unresolved_exceptions: []
+evidence_refs:
+  - id: "build-report"
+    path: "BUILD_REPORT.md"
+    authority: "dagr-commerce-contracts"
+    relationship: "projects"
+    notes: "Exact commands and real counts from the actual gate run."
+integrity:
+  source_path: ".ecosystem/CONFORMANCE_PROJECTION.yaml"
+  notes: >-
+    A/B/C/D/E labels describe structural declaration conformance to the vendored
+    arcs-ecosystem-kit schema only. They are not ARCS conformance, not a
+    protocol conformance claim, and not an aggregate verdict.
+notes: >-
+  Conformance here means: these declarations validate against the vendored
+  ecosystem schemas, and the commerce contracts pass this repository's reference
+  validator. It is scoped to structure, not to any protocol's native semantics,
+  and it makes no aggregate trusted/safe/compliant/verified/governed claim.

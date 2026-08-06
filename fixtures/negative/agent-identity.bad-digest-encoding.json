@@ -1,0 +1,10 @@
+{
+  "object_type": "agent_identity",
+  "contract_version": "0.1.0",
+  "agent_ref": { "ref_type": "agent", "id": "agent-xyz" },
+  "public_key_digest": {
+    "algorithm": "sha-256",
+    "encoding": "plaintext",
+    "value": "not-an-encoding-we-allow"
+  }
+}

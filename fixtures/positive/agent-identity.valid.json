@@ -1,0 +1,15 @@
+{
+  "object_type": "agent_identity",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:02:00Z",
+  "agent_ref": { "ref_type": "agent", "id": "agent-xyz" },
+  "display_name": "Example Buyer Agent",
+  "public_key_digest": {
+    "algorithm": "sha-256",
+    "encoding": "hex",
+    "value": "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3"
+  },
+  "attestations": [
+    { "ref_type": "attestation", "id": "att-1" }
+  ]
+}

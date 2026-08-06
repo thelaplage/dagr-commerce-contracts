@@ -1,0 +1,15 @@
+{
+  "object_type": "intent",
+  "contract_version": "0.1.0",
+  "intent_id": "intent-0001",
+  "created_at": "2026-08-05T12:00:00Z",
+  "intent_kind": "purchase",
+  "description": "Purchase a single unit of an offered item within a stated limit.",
+  "principal_ref": { "ref_type": "principal", "id": "principal-abc" },
+  "subject_ref": { "ref_type": "offer", "id": "offer-9001" },
+  "amount_limit": { "currency_code": "USD", "value": "25.00" },
+  "constraints_ref": { "ref_type": "spend_constraints", "id": "constraints-1" },
+  "observations": [
+    { "check_id": "intent.amount_within_limit", "path": "$.amount_limit.value", "state": "satisfied" }
+  ]
+}

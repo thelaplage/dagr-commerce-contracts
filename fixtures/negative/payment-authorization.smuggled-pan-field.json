@@ -1,0 +1,12 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.1.0",
+  "authorization_id": "payauth-neg-2",
+  "amount": { "currency_code": "USD", "value": "10.00" },
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "payment_credential",
+    "method": "omitted"
+  },
+  "card_number": "PLACEHOLDER-NOT-A-REAL-PAN"
+}
