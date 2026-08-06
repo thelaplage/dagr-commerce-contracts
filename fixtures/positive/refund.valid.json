@@ -1,0 +1,11 @@
+{
+  "object_type": "refund",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:12:00Z",
+  "refund_id": "refund-0001",
+  "order_ref": { "ref_type": "order", "id": "order-0001" },
+  "original_payment_ref": { "ref_type": "payment_authorization", "id": "payauth-0001" },
+  "amount": { "currency_code": "USD", "value": "20.00" },
+  "refund_state": "requested",
+  "reason": "buyer cancellation before fulfillment"
+}

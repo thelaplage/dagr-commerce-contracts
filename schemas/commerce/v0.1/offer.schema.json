@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/offer.schema.json",
+  "title": "Offer v0.1",
+  "description": "A protocol-neutral projection of an offer of goods or services. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "offer_id"],
+  "properties": {
+    "object_type": { "const": "offer" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "offer_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "merchant_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["item_ref"],
+        "properties": {
+          "item_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+          "description": { "type": "string", "maxLength": 1024 },
+          "unit_amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+          "quantity": { "type": "number", "minimum": 0 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "total": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

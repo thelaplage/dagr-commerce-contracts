@@ -1,0 +1,16 @@
+{
+  "object_type": "evidence_envelope",
+  "envelope_kind": "protocol_neutral_evidence_projection",
+  "contract_version": "0.1.0",
+  "envelope_id": "envelope-0001",
+  "projections": [
+    {
+      "protocol_family": "example-native-protocol",
+      "protocol_version": "1.0",
+      "native_object_type": "settlement_response",
+      "digest": { "algorithm": "sha-256", "encoding": "hex", "value": "d1d1d1" },
+      "custody": { "disposition": "external_store", "location_hint": "store/1" }
+    }
+  ],
+  "verdict": "trusted"
+}

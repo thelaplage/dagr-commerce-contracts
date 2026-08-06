@@ -1,0 +1,287 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.responsibilities.v0.1.schema.json",
+  "title": "ARCS Ecosystem Responsibilities v0.1",
+  "description": "Declares current, candidate, and explicitly unowned repository responsibilities without treating planned or candidate work as current ownership.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "responsibilities",
+    "unowned_responsibilities"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.responsibilities.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "responsibilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/responsibility"
+      }
+    },
+    "unowned_responsibilities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unowned_responsibility"
+      }
+    },
+    "escalation_paths": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/escalation_path"
+      }
+    },
+    "native_registry_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/native_registry_ref"
+      }
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "escalation_path": {
+      "type": "object",
+      "required": [
+        "concern",
+        "authority_repository",
+        "reason"
+      ],
+      "properties": {
+        "concern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_repository": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "layer_id": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ]
+    },
+    "native_registry_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority",
+        "summary_role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "responsibility": {
+      "type": "object",
+      "required": [
+        "id",
+        "summary",
+        "constitutional_layer",
+        "current_owner",
+        "candidate_owner",
+        "candidate_verified",
+        "migration_authorized",
+        "relationship",
+        "assertion_status",
+        "evidence_refs"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "constitutional_layer": {
+          "$ref": "#/$defs/layer_id"
+        },
+        "current_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "candidate_verified": {
+          "type": "boolean"
+        },
+        "migration_authorized": {
+          "type": "boolean"
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "unowned_responsibility": {
+      "type": "object",
+      "required": [
+        "concern",
+        "authority_repository",
+        "reason"
+      ],
+      "properties": {
+        "concern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_repository": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

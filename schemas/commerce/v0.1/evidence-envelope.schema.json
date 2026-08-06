@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/evidence-envelope.schema.json",
+  "title": "Evidence Envelope v0.1",
+  "description": "A protocol-neutral evidence projection. It bundles references to protocol-native payloads (by digest and custody), references to commerce objects, path-scoped check observations, and redaction markers. It is a projection/reference layer only. It is NOT an ARCS receipt, NOT a verifier verdict, and NOT a coordination record; it carries no aggregate trusted/safe/compliant/verified/governed result. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "envelope_id", "envelope_kind", "projections"],
+  "properties": {
+    "object_type": { "const": "evidence_envelope" },
+    "envelope_kind": {
+      "description": "Fixed marker that this is a protocol-neutral evidence projection, not a native receipt or verifier verdict.",
+      "const": "protocol_neutral_evidence_projection"
+    },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "envelope_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "subject_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "projections": {
+      "description": "The protocol-native payloads referenced by this envelope. Each is referenced by digest and custody; the native payload is not embedded.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "common.schema.json#/$defs/protocol_native_reference" }
+    },
+    "referenced_objects": {
+      "description": "References to commerce objects (by opaque id and optional digest) that this envelope projects. The objects themselves are not embedded here.",
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/subject_reference" }
+    },
+    "observations": {
+      "description": "Path-scoped check observations. No aggregate rollup is provided or implied.",
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "redactions": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/redaction_marker" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

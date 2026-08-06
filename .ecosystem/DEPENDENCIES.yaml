@@ -1,0 +1,21 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.dependencies.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+dependencies:
+  - repository: "arcs-ecosystem-kit"
+    dependency_type: "schema"
+    contract:
+      contract_id: "arcs-ecosystem-kit.ecosystem-coordination-schemas.v0.1"
+      semantic_authority: "arcs-ecosystem-kit"
+    version_requirement:
+      version_range: "arcs-ecosystem-kit @ 138a2117cd9676e59a20af03100d4dd16aaab1f3 (schemas/ecosystem.*.v0.1.schema.json) — vendored verbatim"
+    required: true
+    required_for_release: true
+    reason: >-
+      The 13 ecosystem coordination JSON Schemas govern the SHAPE of this
+      repository's .ecosystem/ declarations. They are vendored verbatim under
+      schemas/ecosystem/ (provenance-pinned) so validation runs offline from a
+      clean clone; no external checkout is required at CI time.
+    compatibility_notes: >-
+      Pinned by source commit and per-file sha256 (schemas/ecosystem/PROVENANCE.yaml).
+      Re-vendoring is a maintenance action via scripts/vendor_ecosystem_schemas.sh.

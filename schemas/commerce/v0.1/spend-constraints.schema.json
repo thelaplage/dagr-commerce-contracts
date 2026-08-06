@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/spend-constraints.schema.json",
+  "title": "Spend Constraints v0.1",
+  "description": "A protocol-neutral projection of constraints on spending (caps, scopes, time windows, execution limits). These are declarative constraints only; enforcement and any allow/deny decision belong to a consumer, not to this vocabulary. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "constraints_id"],
+  "properties": {
+    "object_type": { "const": "spend_constraints" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "constraints_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "per_transaction_cap": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "cumulative_cap": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "currency_scope": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Za-z0-9]{3,8}$" }
+    },
+    "allowed_merchants": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/subject_reference" }
+    },
+    "category_scope": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    },
+    "time_window": {
+      "type": "object",
+      "properties": {
+        "not_before": { "$ref": "common.schema.json#/$defs/timestamp" },
+        "not_after": { "$ref": "common.schema.json#/$defs/timestamp" }
+      },
+      "additionalProperties": false
+    },
+    "max_executions": { "type": "integer", "minimum": 0 },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

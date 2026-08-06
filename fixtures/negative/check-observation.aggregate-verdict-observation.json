@@ -1,0 +1,8 @@
+{
+  "object_type": "check_observation_set",
+  "contract_version": "0.1.0",
+  "observation_set_id": "obs-neg-1",
+  "observations": [
+    { "check_id": "some.check", "path": "$.amount.value", "state": "trusted" }
+  ]
+}

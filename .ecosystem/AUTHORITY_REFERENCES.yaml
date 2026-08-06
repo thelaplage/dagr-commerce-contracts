@@ -1,0 +1,96 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.authority-references.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+authorities:
+  - concern: "ecosystem_coordination_schema_representation"
+    constitutional_layer: "L10"
+    semantic_authority:
+      repository: "arcs-ecosystem-kit"
+      artifact_ref: "schemas/"
+      version: "v0.1"
+      status: "resolved"
+    current_implementation:
+      repository: "dagr-commerce-contracts"
+      role: "consumer"
+      artifact_ref: ".ecosystem/"
+      version: "0.1"
+    candidate_implementation: null
+    historical_implementations: []
+    consumers:
+      - repository: "dagr-commerce-contracts"
+        role: "consumer"
+    producers: []
+    verifier_counterparts: []
+    operational_owners: []
+    migration:
+      authorized: false
+      record_ref: null
+    assertion_status: "validated"
+    evidence_refs:
+      - id: "vendored-ecosystem-schema-provenance"
+        path: "schemas/ecosystem/PROVENANCE.yaml"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+        notes: >-
+          The 13 arcs-ecosystem-kit v0.1 schemas are vendored verbatim under
+          schemas/ecosystem/ (source commit and per-file sha256 recorded in
+          PROVENANCE.yaml) so these declarations validate offline.
+  - concern: "protocol_neutral_commerce_evidence_vocabulary"
+    constitutional_layer: "L10"
+    semantic_authority:
+      repository: "dagr-commerce-contracts"
+      artifact_ref: "schemas/commerce/v0.1/"
+      version: "0.1.0"
+      status: "resolved"
+    current_implementation:
+      repository: "dagr-commerce-contracts"
+      role: "schema_coordination"
+      artifact_ref: "schemas/commerce/v0.1/"
+      version: "0.1.0"
+    candidate_implementation: null
+    historical_implementations: []
+    consumers: []
+    producers: []
+    verifier_counterparts: []
+    operational_owners: []
+    migration:
+      authorized: false
+      record_ref: null
+    assertion_status: "validated"
+    evidence_refs:
+      - id: "reference-validator"
+        path: "src/dagr_commerce_contracts/validate.py"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+        notes: "Reference validator runs the C0 gate as per-check, path-scoped checks."
+    notes: >-
+      This repository is the semantic authority for the SHAPE of the shared
+      commerce vocabulary only. It is not an authority for any protocol's native
+      semantics, nor for ARCS, DAGR, or verifier verdicts.
+  - concern: "ARCS_receipt_semantics_not_owned"
+    constitutional_layer: "L1"
+    semantic_authority:
+      repository: "arcs-standard"
+      artifact_ref: "content/"
+      version: "v1.0"
+      status: "resolved"
+    current_implementation: null
+    candidate_implementation: null
+    historical_implementations: []
+    consumers: []
+    producers: []
+    verifier_counterparts:
+      - repository: "arcs-verify"
+        role: "verifier_counterpart"
+    operational_owners: []
+    migration:
+      authorized: false
+      record_ref: null
+    assertion_status: "declared"
+    evidence_refs: []
+    notes: >-
+      Recorded only to state a boundary: the evidence-envelope in this
+      repository is a protocol-neutral projection that references native
+      payloads by digest/custody. It is NOT an ARCS receipt and does not
+      implement, verify, or ratify ARCS conformance. ARCS receipt/validity
+      semantics remain arcs-standard's authority.

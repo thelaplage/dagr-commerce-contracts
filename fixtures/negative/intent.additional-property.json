@@ -1,0 +1,7 @@
+{
+  "object_type": "intent",
+  "contract_version": "0.1.0",
+  "intent_id": "intent-neg-2",
+  "intent_kind": "purchase",
+  "unexpected_field": "should be rejected by closed schema"
+}

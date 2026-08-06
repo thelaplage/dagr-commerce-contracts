@@ -1,0 +1,18 @@
+{
+  "object_type": "spend_constraints",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:06:00Z",
+  "constraints_id": "constraints-1",
+  "per_transaction_cap": { "currency_code": "USD", "value": "50.00" },
+  "cumulative_cap": { "currency_code": "USD", "value": "200.00" },
+  "currency_scope": ["USD"],
+  "allowed_merchants": [
+    { "ref_type": "merchant", "id": "merchant-101" }
+  ],
+  "category_scope": ["digital_goods"],
+  "time_window": {
+    "not_before": "2026-08-05T00:00:00Z",
+    "not_after": "2026-08-06T00:00:00Z"
+  },
+  "max_executions": 3
+}

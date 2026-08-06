@@ -1,0 +1,18 @@
+{
+  "object_type": "settlement",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:09:00Z",
+  "settlement_id": "settle-0001",
+  "settlement_state": "uncertain",
+  "amount": { "currency_code": "USD", "value": "10.00" },
+  "authorization_ref": { "ref_type": "payment_authorization", "id": "payauth-0001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "preq-0001" },
+  "settlement_reference_digest": {
+    "algorithm": "sha-256",
+    "encoding": "hex",
+    "value": "e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5e5"
+  },
+  "observations": [
+    { "check_id": "settlement.verify_then_settle", "path": "$.settlement_state", "state": "indeterminate", "detail": "facilitator verify succeeded; settle outcome not yet observed" }
+  ]
+}

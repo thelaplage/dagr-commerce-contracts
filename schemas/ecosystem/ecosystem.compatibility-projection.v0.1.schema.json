@@ -1,0 +1,545 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.compatibility-projection.v0.1.schema.json",
+  "title": "ARCS Ecosystem Compatibility Projection v0.1",
+  "description": "Projects compatibility claims for ARCS profiles, SRS profiles, Governed Action Model versions, host products, adapters, verifiers, backward compatibility, unsupported versions, and migration notes without owning those external version semantics.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "native_registry_refs",
+    "arcs_profiles",
+    "srs_profiles",
+    "governed_action_model_versions",
+    "host_product_versions",
+    "adapter_versions",
+    "verifier_versions",
+    "backward_compatibility",
+    "unsupported_versions",
+    "migration_notes"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.compatibility-projection.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_registry_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/native_registry_ref"
+      }
+    },
+    "arcs_profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/profile_projection"
+      }
+    },
+    "srs_profiles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/profile_projection"
+      }
+    },
+    "governed_action_model_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/profile_projection"
+      }
+    },
+    "host_product_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_version_projection"
+      }
+    },
+    "adapter_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_version_projection"
+      }
+    },
+    "verifier_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/product_version_projection"
+      }
+    },
+    "backward_compatibility": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/backward_compatibility_projection"
+      }
+    },
+    "unsupported_versions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/unsupported_version_projection"
+      }
+    },
+    "migration_notes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/migration_note_projection"
+      }
+    },
+    "ownership_transitions": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/ownership_transition"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "backward_compatibility_projection": {
+      "type": "object",
+      "required": [
+        "scope",
+        "from_version",
+        "to_version",
+        "relationship",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref",
+        "authority_version",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "from_version": {
+          "$ref": "#/$defs/version"
+        },
+        "to_version": {
+          "$ref": "#/$defs/version"
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity_metadata": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratification_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "migration_note_projection": {
+      "type": "object",
+      "required": [
+        "scope",
+        "note",
+        "relationship",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref",
+        "authority_version",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "native_registry_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority",
+        "summary_role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "ownership_transition": {
+      "type": "object",
+      "required": [
+        "current_owner",
+        "candidate_verified",
+        "migration_authorized"
+      ],
+      "properties": {
+        "current_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_verified": {
+          "type": "boolean"
+        },
+        "migration_authorized": {
+          "type": "boolean"
+        },
+        "migration_record_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "product_version_projection": {
+      "type": "object",
+      "required": [
+        "product",
+        "version",
+        "semantic_authority",
+        "relationship",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref",
+        "authority_version",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "product": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "semantic_authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "profile_projection": {
+      "type": "object",
+      "required": [
+        "id",
+        "version",
+        "semantic_authority",
+        "relationship",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref",
+        "authority_version",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "semantic_authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "historical_reference": {
+          "type": "boolean"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "unsupported_version_projection": {
+      "type": "object",
+      "required": [
+        "scope",
+        "version",
+        "reason",
+        "relationship",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref",
+        "authority_version",
+        "evidence_refs",
+        "integrity"
+      ],
+      "properties": {
+        "scope": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        }
+      },
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    }
+  }
+}

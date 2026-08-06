@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/check-observation.schema.json",
+  "title": "Check Observation Set v0.1",
+  "description": "A set of path-scoped check observations about one subject. Each observation reports only what was observed on its single named path. This object deliberately has no aggregate rollup, score, or verdict field: it never emits an aggregate trusted/safe/compliant/verified/governed result. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "observation_set_id", "observations"],
+  "properties": {
+    "object_type": { "const": "check_observation_set" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "observation_set_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "subject_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "observations": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

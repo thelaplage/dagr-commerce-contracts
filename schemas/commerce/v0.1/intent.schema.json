@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/intent.schema.json",
+  "title": "Commerce Intent v0.1",
+  "description": "A protocol-neutral projection of what a principal intends to do (e.g. purchase, subscribe, pay, refund). Does not bind any specific commerce protocol, payment rail, chain, PSP, merchant, or wallet. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "intent_id", "intent_kind"],
+  "properties": {
+    "object_type": { "const": "intent" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "intent_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "intent_kind": {
+      "description": "Free-text label for the kind of intent. No specific value is required or privileged.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "description": { "type": "string", "maxLength": 2048 },
+    "principal_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "subject_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "amount_limit": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "constraints_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

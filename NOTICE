@@ -1,0 +1,43 @@
+dagr-commerce-contracts
+Copyright 2026 dagr-commerce-contracts maintainers
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+--------------------------------------------------------------------------------
+Third-party material vendored into this repository
+--------------------------------------------------------------------------------
+
+schemas/ecosystem/*.json
+
+  The 13 ecosystem coordination JSON Schemas under schemas/ecosystem/ are
+  vendored verbatim from the arcs-ecosystem-kit project (thelaplage/
+  arcs-ecosystem-kit), which is distributed under the MIT License,
+  Copyright (c) 2026 Vega Commons Project, Inc.
+
+  They are included so this repository can validate its own .ecosystem/
+  declarations offline, without requiring an external checkout. The exact
+  source commit and per-file SHA-256 digests are recorded in
+  schemas/ecosystem/PROVENANCE.yaml. These files remain under their original
+  MIT License; that license text is reproduced below.
+
+  MIT License
+
+  Copyright (c) 2026 Vega Commons Project, Inc.
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.

@@ -1,0 +1,465 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.contract-bindings.v0.1.schema.json",
+  "title": "ARCS Ecosystem Contract Bindings v0.1",
+  "description": "Projects contract bindings with separate owning layer, semantic authority, provider implementation, consumer implementation, compatibility, migration, evidence, and integrity metadata.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "native_registry_refs",
+    "provided",
+    "consumed"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.contract-bindings.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_registry_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/native_registry_ref"
+      }
+    },
+    "provided": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/contract_binding"
+      }
+    },
+    "consumed": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/contract_binding"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "compatibility": {
+      "type": "object",
+      "required": [
+        "assertion_status"
+      ],
+      "properties": {
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "backward_compatible_with": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/version"
+          }
+        },
+        "unsupported_versions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/version"
+          }
+        },
+        "migration_notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "contract_binding": {
+      "type": "object",
+      "required": [
+        "contract_id",
+        "owning_layer",
+        "semantic_authority",
+        "provider_implementation",
+        "consumer_implementation",
+        "relationship",
+        "version",
+        "contract_type",
+        "stability",
+        "assertion_status",
+        "evidence_refs",
+        "compatibility",
+        "migration",
+        "integrity"
+      ],
+      "properties": {
+        "contract_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "owning_layer": {
+          "$ref": "#/$defs/layer_id"
+        },
+        "semantic_authority": {
+          "$ref": "#/$defs/semantic_authority_ref"
+        },
+        "provider_implementation": {
+          "$ref": "#/$defs/implementation_ref_or_null"
+        },
+        "consumer_implementation": {
+          "$ref": "#/$defs/implementation_ref_or_null"
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "contract_type": {
+          "$ref": "#/$defs/contract_type"
+        },
+        "stability": {
+          "$ref": "#/$defs/stability"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "known_consumers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "compatibility": {
+          "$ref": "#/$defs/compatibility"
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "migration": {
+          "$ref": "#/$defs/migration_state"
+        },
+        "integrity": {
+          "$ref": "#/$defs/integrity_metadata"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "contract_type": {
+      "type": "string",
+      "enum": [
+        "normative_standard",
+        "schema",
+        "runtime_api",
+        "evidence_profile",
+        "verification_report",
+        "viewer_contract",
+        "adapter_contract",
+        "proof_pack_contract",
+        "policy_contract",
+        "operations_contract",
+        "coordination_schema"
+      ]
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementation_ref": {
+      "type": "object",
+      "required": [
+        "repository",
+        "role"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "$ref": "#/$defs/implementation_role"
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementation_ref_or_null": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/implementation_ref"
+        }
+      ]
+    },
+    "implementation_role": {
+      "type": "string",
+      "enum": [
+        "semantic_authority",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementation",
+        "consumer",
+        "producer",
+        "emitter",
+        "provider",
+        "adapter",
+        "runtime_binding",
+        "verifier_counterpart",
+        "operational_owner",
+        "schema_coordination",
+        "planned_role",
+        "not_applicable"
+      ]
+    },
+    "integrity_metadata": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratification_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "layer_id": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ]
+    },
+    "migration_state": {
+      "type": "object",
+      "required": [
+        "current_owner",
+        "candidate_owner",
+        "candidate_verified",
+        "migration_authorized",
+        "migration_record_ref"
+      ],
+      "properties": {
+        "current_owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "candidate_owner": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "candidate_verified": {
+          "type": "boolean"
+        },
+        "migration_authorized": {
+          "type": "boolean"
+        },
+        "migration_record_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "native_registry_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority",
+        "summary_role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "semantic_authority_ref": {
+      "type": "object",
+      "required": [
+        "repository",
+        "status"
+      ],
+      "properties": {
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "resolved",
+            "unresolved",
+            "distributed",
+            "historical",
+            "ratified",
+            "canonical"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "stability": {
+      "type": "string",
+      "enum": [
+        "experimental",
+        "preview",
+        "stable",
+        "deprecated",
+        "frozen"
+      ]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    }
+  }
+}

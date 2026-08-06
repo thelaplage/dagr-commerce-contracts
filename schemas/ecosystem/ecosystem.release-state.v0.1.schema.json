@@ -1,0 +1,257 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.release-state.v0.1.schema.json",
+  "title": "ARCS Ecosystem Release State v0.1",
+  "description": "Declares release stage, version, readiness, gates, blockers, dependent releases, compatibility status, release notes, and review date.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "release_stage",
+    "current_version",
+    "release_readiness",
+    "required_gates",
+    "passed_gates",
+    "blocking_issues",
+    "dependent_releases",
+    "compatibility_status",
+    "release_notes_ref",
+    "last_reviewed"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.release-state.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "release_stage": {
+      "type": "string",
+      "enum": [
+        "proposed",
+        "preview",
+        "release_candidate",
+        "stable",
+        "maintenance",
+        "archived"
+      ]
+    },
+    "current_version": {
+      "$ref": "#/$defs/version"
+    },
+    "release_readiness": {
+      "type": "string",
+      "enum": [
+        "not_ready",
+        "blocked",
+        "ready_with_exceptions",
+        "ready",
+        "released"
+      ]
+    },
+    "required_gates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/release_gate"
+      }
+    },
+    "passed_gates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "blocking_issues": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/blocking_issue"
+      }
+    },
+    "dependent_releases": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependent_release"
+      }
+    },
+    "compatibility_status": {
+      "type": "object",
+      "required": [
+        "claim_status",
+        "summary"
+      ],
+      "properties": {
+        "claim_status": {
+          "$ref": "#/$defs/claim_status"
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "release_notes_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "last_reviewed": {
+      "$ref": "#/$defs/date"
+    }
+  },
+  "additionalProperties": false,
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "release_readiness": {
+            "const": "ready"
+          }
+        },
+        "required": [
+          "release_readiness"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocking_issues": {
+            "maxItems": 0
+          },
+          "required_gates": {
+            "items": {
+              "properties": {
+                "status": {
+                  "enum": [
+                    "passed",
+                    "not_applicable"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "blocking_issue": {
+      "type": "object",
+      "required": [
+        "issue_id",
+        "description",
+        "status"
+      ],
+      "properties": {
+        "issue_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "open",
+            "mitigated",
+            "closed"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "claim_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "date": {
+      "type": "string",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "dependent_release": {
+      "type": "object",
+      "required": [
+        "repository",
+        "version",
+        "relationship"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "relationship": {
+          "type": "string",
+          "enum": [
+            "requires",
+            "blocks",
+            "optional",
+            "informs"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "release_gate": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "description",
+        "status",
+        "required_for_release"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "pending",
+            "passed",
+            "failed",
+            "not_applicable"
+          ]
+        },
+        "required_for_release": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    }
+  }
+}

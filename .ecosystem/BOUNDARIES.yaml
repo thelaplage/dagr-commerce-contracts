@@ -1,0 +1,65 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.boundaries.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+boundaries:
+  - id: "commerce-vocabulary-schema-ownership"
+    boundary_type: "schema_ownership"
+    constitutional_layer: "L10"
+    owner_repository: "dagr-commerce-contracts"
+    description: "This repository owns the shape of the protocol-neutral commerce evidence vocabulary and its evidence-envelope. It owns no protocol-native semantics and no runtime."
+    allowed_imports: []
+    prohibited_imports: []
+    authority_refs:
+      - "AUTHORITY_REFERENCES.yaml#protocol_neutral_commerce_evidence_vocabulary"
+    assertion_status: "validated"
+    evidence_refs:
+      - id: "commerce-schemas"
+        path: "schemas/commerce/v0.1/"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+  - id: "projection-not-receipt"
+    boundary_type: "evidence_presentation"
+    constitutional_layer: "L1"
+    owner_repository: "dagr-commerce-contracts"
+    description: "The evidence-envelope is a protocol-neutral projection that references native payloads by digest/custody. It is not an ARCS receipt and not a verifier verdict, and it preserves native protocol, version, object type, digest, and redaction status."
+    allowed_imports: []
+    prohibited_imports:
+      - repository: "arcs-standard"
+        relationship: "not_applicable"
+        reason: "This repository does not implement or replace ARCS receipt semantics."
+    authority_refs:
+      - "AUTHORITY_REFERENCES.yaml#ARCS_receipt_semantics_not_owned"
+    assertion_status: "declared"
+    evidence_refs:
+      - id: "evidence-envelope-schema"
+        path: "schemas/commerce/v0.1/evidence-envelope.schema.json"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+        notes: "envelope_kind is fixed to protocol_neutral_evidence_projection and no aggregate-verdict field exists."
+forbidden_dependencies:
+  - id: "no-protocol-rail-binding"
+    description: "No contract may require a specific commerce protocol, payment rail, chain, PSP, merchant, wallet, or DAGR transport."
+    source:
+      repository: "dagr-commerce-contracts"
+      constitutional_layer: "L10"
+      concern: "protocol-neutral commerce vocabulary"
+    target:
+      repository: null
+      constitutional_layer: "L4"
+      concern: "any specific protocol/rail/transport binding"
+    status: "prohibited"
+    rationale: "Neutrality is the point of the vocabulary; a required binding would overclaim and break reuse across the five packs."
+  - id: "no-aggregate-verdict-dependency"
+    description: "No object or report may depend on, or emit, an aggregate trusted/safe/compliant/verified/governed verdict."
+    source:
+      repository: "dagr-commerce-contracts"
+      constitutional_layer: "L10"
+      concern: "path-scoped observations"
+    target:
+      repository: null
+      constitutional_layer: "L1"
+      concern: "aggregate verdict"
+    status: "prohibited"
+    rationale: "Program-wide claim discipline: results stay per-path/per-check."
+native_registry_refs: []
+notes: "Boundaries are enforced structurally by the schemas (closed objects, no verdict field, reference-by-digest) and checked by src/dagr_commerce_contracts/validate.py."

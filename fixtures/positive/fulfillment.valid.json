@@ -1,0 +1,12 @@
+{
+  "object_type": "fulfillment",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:11:00Z",
+  "fulfillment_id": "fulfill-0001",
+  "order_ref": { "ref_type": "order", "id": "order-0001" },
+  "fulfillment_state": "pending",
+  "delivery_ref": { "ref_type": "delivery", "id": "delivery-0001" },
+  "observations": [
+    { "check_id": "fulfillment.settle_delivery_atomicity", "path": "$.fulfillment_state", "state": "indeterminate", "detail": "settlement observed; delivery not yet observed" }
+  ]
+}

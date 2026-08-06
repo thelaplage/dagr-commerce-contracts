@@ -1,0 +1,111 @@
+{
+  "description": "Fixture manifest for the dagr-commerce-contracts reference validator. Positive fixtures must validate; negative and mutation fixtures must fail, and the reference validator asserts each failure occurs at the intended path/keyword (a path-scoped reason), not merely that some error occurred.",
+  "positive": [
+    { "file": "positive/intent.valid.json", "schema": "intent.schema.json" },
+    { "file": "positive/principal-authorization.valid.json", "schema": "principal-authorization.schema.json" },
+    { "file": "positive/agent-identity.valid.json", "schema": "agent-identity.schema.json" },
+    { "file": "positive/merchant.valid.json", "schema": "merchant.schema.json" },
+    { "file": "positive/offer.valid.json", "schema": "offer.schema.json" },
+    { "file": "positive/cart.valid.json", "schema": "cart.schema.json" },
+    { "file": "positive/spend-constraints.valid.json", "schema": "spend-constraints.schema.json" },
+    { "file": "positive/payment-requirement.valid.json", "schema": "payment-requirement.schema.json" },
+    { "file": "positive/payment-authorization.valid.json", "schema": "payment-authorization.schema.json" },
+    { "file": "positive/settlement.valid.json", "schema": "settlement.schema.json" },
+    { "file": "positive/order.valid.json", "schema": "order.schema.json" },
+    { "file": "positive/fulfillment.valid.json", "schema": "fulfillment.schema.json" },
+    { "file": "positive/refund.valid.json", "schema": "refund.schema.json" },
+    { "file": "positive/native-evidence.valid.json", "schema": "native-evidence.schema.json" },
+    { "file": "positive/check-observation.valid.json", "schema": "check-observation.schema.json" },
+    { "file": "positive/evidence-envelope.valid.json", "schema": "evidence-envelope.schema.json" }
+  ],
+  "negative": [
+    {
+      "file": "negative/intent.missing-intent-kind.json",
+      "schema": "intent.schema.json",
+      "expect": { "keyword": "required", "path": "$", "message_contains": "intent_kind" }
+    },
+    {
+      "file": "negative/intent.additional-property.json",
+      "schema": "intent.schema.json",
+      "expect": { "keyword": "additionalProperties", "path": "$" }
+    },
+    {
+      "file": "negative/merchant.wrong-object-type.json",
+      "schema": "merchant.schema.json",
+      "expect": { "keyword": "const", "path": "$.object_type" }
+    },
+    {
+      "file": "negative/payment-authorization.raw-material.json",
+      "schema": "payment-authorization.schema.json",
+      "expect": { "keyword": "oneOf", "path": "$.authorization_material" }
+    },
+    {
+      "file": "negative/payment-authorization.smuggled-pan-field.json",
+      "schema": "payment-authorization.schema.json",
+      "expect": { "keyword": "additionalProperties", "path": "$", "message_contains": "card_number" }
+    },
+    {
+      "file": "negative/settlement.aggregate-verdict-state.json",
+      "schema": "settlement.schema.json",
+      "expect": { "keyword": "enum", "path": "$.settlement_state" }
+    },
+    {
+      "file": "negative/check-observation.aggregate-verdict-observation.json",
+      "schema": "check-observation.schema.json",
+      "expect": { "keyword": "enum", "path": "$.observations[0].state" }
+    },
+    {
+      "file": "negative/agent-identity.bad-digest-encoding.json",
+      "schema": "agent-identity.schema.json",
+      "expect": { "keyword": "enum", "path": "$.public_key_digest.encoding" }
+    },
+    {
+      "file": "negative/evidence-envelope.redaction-not-redacted.json",
+      "schema": "evidence-envelope.schema.json",
+      "expect": { "keyword": "const", "path": "$.redactions[0].redacted" }
+    },
+    {
+      "file": "negative/evidence-envelope.empty-projections.json",
+      "schema": "evidence-envelope.schema.json",
+      "expect": { "keyword": "minItems", "path": "$.projections" }
+    }
+  ],
+  "mutation": [
+    {
+      "file": "mutation/cart.negative-revision.json",
+      "schema": "cart.schema.json",
+      "base": "positive/cart.valid.json",
+      "expect": { "keyword": "minimum", "path": "$.revision" }
+    },
+    {
+      "file": "mutation/payment-requirement.bad-amount-value.json",
+      "schema": "payment-requirement.schema.json",
+      "base": "positive/payment-requirement.valid.json",
+      "expect": { "keyword": "pattern", "path": "$.amount.value" }
+    },
+    {
+      "file": "mutation/evidence-envelope.long-redaction-hint.json",
+      "schema": "evidence-envelope.schema.json",
+      "base": "positive/evidence-envelope.valid.json",
+      "expect": { "keyword": "maxLength", "path": "$.redactions[0].hint" }
+    },
+    {
+      "file": "mutation/offer.bad-currency-code.json",
+      "schema": "offer.schema.json",
+      "base": "positive/offer.valid.json",
+      "expect": { "keyword": "pattern", "path": "$.items[0].unit_amount.currency_code" }
+    },
+    {
+      "file": "mutation/evidence-envelope.smuggled-verdict.json",
+      "schema": "evidence-envelope.schema.json",
+      "base": "positive/evidence-envelope.valid.json",
+      "expect": { "keyword": "additionalProperties", "path": "$", "message_contains": "verdict" }
+    },
+    {
+      "file": "mutation/native-evidence.empty-digest-value.json",
+      "schema": "native-evidence.schema.json",
+      "base": "positive/native-evidence.valid.json",
+      "expect": { "keyword": "minLength", "path": "$.native.digest.value" }
+    }
+  ]
+}

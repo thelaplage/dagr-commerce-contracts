@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/agent-identity.schema.json",
+  "title": "Agent Identity v0.1",
+  "description": "A protocol-neutral projection of an acting agent's identity. Any key material is referenced by digest only (public-key reference); no private key is ever carried. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "agent_ref"],
+  "properties": {
+    "object_type": { "const": "agent_identity" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "agent_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "display_name": { "type": "string", "maxLength": 256 },
+    "public_key_digest": {
+      "description": "Digest of a public key. Never a private key and never a raw key value.",
+      "$ref": "common.schema.json#/$defs/digest"
+    },
+    "attestations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/subject_reference" }
+    },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

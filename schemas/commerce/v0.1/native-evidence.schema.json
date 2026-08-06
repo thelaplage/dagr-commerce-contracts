@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/native-evidence.schema.json",
+  "title": "Native Evidence v0.1",
+  "description": "A protocol-neutral wrapper that references one protocol-native object by digest and custody, preserving its native protocol, version, and object type. It is a reference to native evidence, not a replacement for it, and it must not be treated as an ARCS receipt or any verifier verdict. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "evidence_id", "native"],
+  "properties": {
+    "object_type": { "const": "native_evidence" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "evidence_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "subject_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

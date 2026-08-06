@@ -1,0 +1,56 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.repository.v0.1.schema.json"
+schema_version: "0.1"
+repository:
+  name: "dagr-commerce-contracts"
+  types:
+    - "schema"
+    - "reference_repository"
+  lifecycle_state: "preview"
+  owning_layer: "schema_coordination"
+  substrate_surface_role: "coordination"
+  canonical_repository_url: "https://github.com/thelaplage/dagr-commerce-contracts"
+constitutional_roles:
+  primary_layer: "L10"
+  secondary_layers: []
+authority:
+  status: "implementation_support"
+  canonical_doctrine_repository: "garp-doctrine"
+  semantic_authority_for:
+    - "protocol-neutral commerce evidence vocabulary v0.1 (schemas/commerce/v0.1)"
+  implementation_roles:
+    - "schema_coordination"
+  notes: >-
+    Provides a protocol-neutral, language-neutral commerce evidence vocabulary
+    (JSON Schema Draft 2020-12 contracts, fixtures, and a reference validator)
+    that protocol proof packs consume by projection. It owns only the shape of
+    that shared vocabulary. It does NOT own or define: ARCS validity or receipt
+    semantics (arcs-standard / arcs-verify), any DAGR binding or transport, any
+    verifier verdict, Counterpedia record semantics, coordination authority, or
+    any specific commerce protocol, payment rail, chain, PSP, merchant, or
+    wallet. It makes no aggregate trusted/safe/compliant/verified/governed
+    claim; every check it defines is per-path/per-check.
+mission: "Provide a protocol-neutral commerce evidence vocabulary the protocol proof packs consume by projection, without redefining DAGR, ARCS, protocol-native semantics, or verifier verdicts."
+owned_concerns:
+  - "protocol-neutral commerce evidence vocabulary (schema shape)"
+  - "path-scoped check-observation shape"
+  - "protocol-neutral evidence projection/envelope shape (reference-by-digest, not a receipt)"
+unowned_concerns:
+  - "ARCS validity and receipt semantics"
+  - "any DAGR binding, transport, or verifier verdict"
+  - "Counterpedia record semantics"
+  - "coordination authority"
+  - "any specific commerce protocol, payment rail, chain, PSP, merchant, or wallet semantics"
+ownership:
+  owners:
+    - name: "dagr-commerce-contracts maintainers"
+      role: "shared-contract maintainer"
+status_metadata:
+  claim_status: "validated"
+  last_reviewed: "2026-08-05"
+  known_drifts: []
+  requires_threat_audit: false
+  notes: >-
+    claim_status validated refers to structural conformance of these
+    .ecosystem declarations to the vendored arcs-ecosystem-kit v0.1 schemas and
+    to the commerce contracts passing this repository's own reference validator.
+    It is not ARCS conformance and not an aggregate verdict.

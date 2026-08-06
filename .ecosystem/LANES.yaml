@@ -1,0 +1,62 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.lanes.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+lanes:
+  - lane_id: "c0-shared-contract-foundation"
+    status: "review"
+    owner:
+      name: "dagr-commerce-contracts maintainers"
+    start_date: "2026-08-05"
+    objective: "Establish the protocol-neutral commerce evidence vocabulary v0.1: Apache-2.0 foundation, Draft 2020-12 contracts, evidence-envelope, redaction rules, positive/negative/mutation fixtures, a reference validator, a machine-readable compatibility policy, a claims/boundaries document, and all 13 schema-valid .ecosystem declarations."
+    repositories_touched:
+      - "dagr-commerce-contracts"
+    capabilities_touched: []
+    contracts_touched:
+      - "dagr-commerce-contracts.commerce-vocabulary.v0.1"
+    produced_artifacts:
+      - artifact_id: "commerce-vocabulary"
+        artifact_type: "schema"
+        path_or_ref: "schemas/commerce/v0.1/"
+        claim_status: "validated"
+      - artifact_id: "reference-validator"
+        artifact_type: "test"
+        path_or_ref: "src/dagr_commerce_contracts/validate.py"
+        claim_status: "validated"
+      - artifact_id: "fixtures"
+        artifact_type: "fixture"
+        path_or_ref: "fixtures/"
+        claim_status: "validated"
+      - artifact_id: "compatibility-policy"
+        artifact_type: "document"
+        path_or_ref: "compatibility/version-policy.v0.1.json"
+        claim_status: "validated"
+      - artifact_id: "claims-and-boundaries"
+        artifact_type: "document"
+        path_or_ref: "CLAIMS_AND_BOUNDARIES.md"
+        claim_status: "declared"
+    consumed_upstream_work:
+      - work_id: "ecosystem-coordination-schemas-v0-1"
+        semantic_authority: "arcs-ecosystem-kit"
+        claim_status: "validated"
+        notes: "Vendored verbatim; provenance-pinned in schemas/ecosystem/PROVENANCE.yaml."
+    overlap_keys:
+      - "commerce.contracts.shared-vocabulary"
+    blockers: []
+    downstream_blocks:
+      - id: "c1-and-wave1-consume-c0"
+        description: "C1 (conformance) and the five wave-1 proof-pack foundations (X1/A1/P1/U1/T1) consume the merged C0 pin, so they cannot start until C0 merges."
+        status: "open"
+    expected_completion_milestone: "commerce-contracts-foundation-v0-1 merged"
+    completion_gates:
+      - gate_id: "schemas-parse-and-positive-fixtures-validate"
+        description: "Every schema parses as Draft 2020-12 and validates its positive fixtures."
+        status: "passed"
+      - gate_id: "negative-and-mutation-fixtures-fail-path-scoped"
+        description: "Negative and mutation fixtures fail for the intended path/keyword."
+        status: "passed"
+      - gate_id: "ecosystem-declarations-schema-valid"
+        description: "All 13 .ecosystem/*.yaml validate against the vendored arcs-ecosystem-kit v0.1 schemas."
+        status: "passed"
+      - gate_id: "no-aggregate-verdict"
+        description: "No schema enum and no fixture outcome uses an aggregate-verdict value."
+        status: "passed"

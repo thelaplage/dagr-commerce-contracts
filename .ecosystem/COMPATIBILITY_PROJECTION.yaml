@@ -1,0 +1,33 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.compatibility-projection.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+native_registry_refs: []
+arcs_profiles: []
+srs_profiles: []
+governed_action_model_versions: []
+host_product_versions: []
+adapter_versions: []
+verifier_versions: []
+backward_compatibility: []
+unsupported_versions: []
+migration_notes:
+  - scope: "genesis-0.1.0"
+    note: >-
+      Initial release of the protocol-neutral commerce evidence vocabulary
+      v0.1.0. The machine-readable compatibility/version policy lives at
+      compatibility/version-policy.v0.1.json. v0.1.x changes are additive and
+      non-breaking to positive fixtures; breaking changes require a version bump
+      and a documented migration. This is a structural-schema compatibility
+      statement only, not ARCS compatibility and not an aggregate verdict.
+    relationship: "validates"
+    assertion_status: "validated"
+    authority_repository: "dagr-commerce-contracts"
+    authority_artifact_ref: "compatibility/version-policy.v0.1.json"
+    authority_version: "0.1.0"
+    evidence_refs:
+      - id: "version-policy"
+        path: "compatibility/version-policy.v0.1.json"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+    integrity: {}
+ownership_transitions: []

@@ -1,0 +1,6 @@
+{
+  "object_type": "payment_requirement",
+  "contract_version": "0.1.0",
+  "requirement_id": "preq-0001",
+  "amount": { "currency_code": "USD", "value": "ten dollars" }
+}

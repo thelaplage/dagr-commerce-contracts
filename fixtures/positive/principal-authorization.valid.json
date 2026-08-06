@@ -1,0 +1,26 @@
+{
+  "object_type": "principal_authorization",
+  "contract_version": "0.1.0",
+  "authorization_id": "pauth-0001",
+  "created_at": "2026-08-05T12:01:00Z",
+  "principal_ref": { "ref_type": "principal", "id": "principal-abc" },
+  "agent_ref": { "ref_type": "agent", "id": "agent-xyz" },
+  "scope": ["purchase", "read_offer"],
+  "constraints_ref": { "ref_type": "spend_constraints", "id": "constraints-1" },
+  "not_before": "2026-08-05T00:00:00Z",
+  "not_after": "2026-08-06T00:00:00Z",
+  "one_time": true,
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "reusable_mandate",
+    "method": "digest_only",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2b2"
+    }
+  },
+  "observations": [
+    { "check_id": "pauth.scope_present", "path": "$.scope", "state": "satisfied" }
+  ]
+}

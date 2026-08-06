@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/settlement.schema.json",
+  "title": "Settlement v0.1",
+  "description": "A protocol-neutral projection of an observed settlement attempt. Settlement state is an operational observation, including an explicit uncertain state; it is never an aggregate trusted/safe/compliant/verified/governed verdict. Relative $ref values resolve against this $id.",
+  "type": "object",
+  "required": ["object_type", "settlement_id", "settlement_state"],
+  "properties": {
+    "object_type": { "const": "settlement" },
+    "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
+    "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
+    "settlement_id": { "$ref": "common.schema.json#/$defs/identifier" },
+    "settlement_state": {
+      "description": "Observed operational state. Uncertain outcomes are preserved rather than collapsed into success or failure.",
+      "type": "string",
+      "enum": ["pending", "settled_observed", "failed_observed", "uncertain"]
+    },
+    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "authorization_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "requirement_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
+    "settlement_reference_digest": { "$ref": "common.schema.json#/$defs/digest" },
+    "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
+    "observations": {
+      "type": "array",
+      "items": { "$ref": "common.schema.json#/$defs/check_observation" }
+    },
+    "extensions": { "$ref": "common.schema.json#/$defs/extensions" }
+  },
+  "additionalProperties": false
+}

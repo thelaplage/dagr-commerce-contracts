@@ -1,0 +1,84 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.contract-bindings.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+native_registry_refs: []
+provided:
+  - contract_id: "dagr-commerce-contracts.commerce-vocabulary.v0.1"
+    owning_layer: "L10"
+    semantic_authority:
+      repository: "dagr-commerce-contracts"
+      artifact_ref: "schemas/commerce/v0.1/"
+      version: "0.1.0"
+      status: "resolved"
+    provider_implementation:
+      repository: "dagr-commerce-contracts"
+      role: "schema_coordination"
+      artifact_ref: "schemas/commerce/v0.1/"
+      version: "0.1.0"
+    consumer_implementation: null
+    relationship: "implements"
+    version: "0.1.0"
+    contract_type: "schema"
+    stability: "preview"
+    assertion_status: "validated"
+    known_consumers:
+      - "protocol proof packs (x402/ACP/AP2/UCP/Visa-TAP) consuming the vocabulary by projection in later waves"
+    compatibility:
+      assertion_status: "declared"
+    evidence_refs:
+      - id: "reference-validator"
+        path: "src/dagr_commerce_contracts/validate.py"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+        notes: "Runs schemas-parse, positive/negative/mutation fixtures, and no-aggregate-verdict checks."
+    migration:
+      current_owner: "dagr-commerce-contracts"
+      candidate_owner: null
+      candidate_verified: false
+      migration_authorized: false
+      migration_record_ref: null
+    integrity:
+      source_path: "schemas/commerce/v0.1/"
+      notes: "Per-file sha256 digests are recorded in compatibility/version-policy.v0.1.json (generated from the committed schema bytes)."
+consumed:
+  - contract_id: "arcs-ecosystem-kit.ecosystem-coordination-schemas.v0.1"
+    owning_layer: "L10"
+    semantic_authority:
+      repository: "arcs-ecosystem-kit"
+      artifact_ref: "schemas/"
+      version: "v0.1"
+      status: "resolved"
+    provider_implementation:
+      repository: "arcs-ecosystem-kit"
+      role: "current_implementation"
+      artifact_ref: "schemas/"
+      version: "138a2117cd9676e59a20af03100d4dd16aaab1f3"
+    consumer_implementation:
+      repository: "dagr-commerce-contracts"
+      role: "consumer"
+      artifact_ref: ".ecosystem/"
+      version: "0.1"
+    relationship: "consumes"
+    version: "v0.1"
+    contract_type: "coordination_schema"
+    stability: "stable"
+    assertion_status: "validated"
+    known_consumers:
+      - "dagr-commerce-contracts .ecosystem/ declarations"
+    compatibility:
+      assertion_status: "validated"
+    evidence_refs:
+      - id: "vendored-schema-provenance"
+        path: "schemas/ecosystem/PROVENANCE.yaml"
+        authority: "dagr-commerce-contracts"
+        relationship: "validates"
+        notes: "Vendored verbatim at source commit 138a2117; per-file sha256 recorded."
+    migration:
+      current_owner: "arcs-ecosystem-kit"
+      candidate_owner: null
+      candidate_verified: false
+      migration_authorized: false
+      migration_record_ref: null
+    integrity:
+      source_path: "schemas/ecosystem/"
+      notes: "13 schemas vendored at arcs-ecosystem-kit 138a2117cd9676e59a20af03100d4dd16aaab1f3; digests in schemas/ecosystem/PROVENANCE.yaml."

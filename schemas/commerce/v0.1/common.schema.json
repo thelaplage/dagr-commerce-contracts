@@ -1,0 +1,195 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://contracts.dagr-commerce.dev/schema/v0.1/common.schema.json",
+  "title": "Commerce Contracts Common Definitions v0.1",
+  "description": "Shared, protocol-neutral definitions reused across the commerce evidence vocabulary. Identifiers in the contracts.dagr-commerce.dev namespace are stable, repository-local, versioned identifiers only; they are not a published, registered, or upstream standard, and network resolution is neither required nor implied. All validation is offline against the files in this repository.",
+  "$defs": {
+    "contract_version": {
+      "title": "Contract version",
+      "description": "Semantic version of the contract vocabulary an object was authored against.",
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "identifier": {
+      "title": "Opaque identifier",
+      "description": "A caller-scoped, non-secret identifier. Must not carry a secret, credential, or real financial account number.",
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 512
+    },
+    "timestamp": {
+      "title": "RFC 3339 timestamp",
+      "type": "string",
+      "format": "date-time"
+    },
+    "digest_algorithm": {
+      "type": "string",
+      "enum": ["sha-256", "sha-384", "sha-512", "sha3-256", "blake3"]
+    },
+    "digest": {
+      "title": "Content digest",
+      "description": "A cryptographic digest of a native payload. Carries the digest, never the payload.",
+      "type": "object",
+      "required": ["algorithm", "encoding", "value"],
+      "properties": {
+        "algorithm": { "$ref": "#/$defs/digest_algorithm" },
+        "encoding": { "type": "string", "enum": ["hex", "base64", "base64url", "multibase"] },
+        "value": { "type": "string", "minLength": 1, "maxLength": 1024 }
+      },
+      "additionalProperties": false
+    },
+    "custody_disposition": {
+      "title": "Custody disposition",
+      "description": "Where the native object actually lives. This vocabulary never takes custody of, and never copies, sensitive native objects; it references them.",
+      "type": "string",
+      "enum": [
+        "caller_retained",
+        "external_store",
+        "not_retained",
+        "inline_redacted"
+      ]
+    },
+    "custody_reference": {
+      "title": "Custody reference",
+      "description": "A pointer to where a native payload is held, without embedding the payload. location_hint is a non-secret opaque locator (e.g. a store key), never a bearer URL with credentials.",
+      "type": "object",
+      "required": ["disposition"],
+      "properties": {
+        "disposition": { "$ref": "#/$defs/custody_disposition" },
+        "location_hint": { "type": "string", "minLength": 1, "maxLength": 1024 },
+        "digest": { "$ref": "#/$defs/digest" },
+        "byte_length": { "type": "integer", "minimum": 0 },
+        "media_type": { "type": "string", "minLength": 1, "maxLength": 255 }
+      },
+      "additionalProperties": false
+    },
+    "sensitive_material_class": {
+      "title": "Sensitive material class",
+      "description": "Classes of material that must never appear as a raw value in any object of this vocabulary.",
+      "type": "string",
+      "enum": [
+        "private_key",
+        "bearer_token",
+        "payment_credential",
+        "pan_equivalent",
+        "reusable_mandate",
+        "raw_secret",
+        "personal_data",
+        "other"
+      ]
+    },
+    "redaction_method": {
+      "type": "string",
+      "enum": ["omitted", "digest_only", "custody_reference", "masked", "tokenized_reference"]
+    },
+    "redaction_marker": {
+      "title": "Redaction marker",
+      "description": "Stands in the place of sensitive native material. A redaction marker carries no raw secret: it records the class of material and how it was removed, optionally with a digest or custody reference. A `masked` marker exposes at most a short, non-reconstructable hint.",
+      "type": "object",
+      "required": ["redacted", "material_class", "method"],
+      "properties": {
+        "redacted": { "const": true },
+        "material_class": { "$ref": "#/$defs/sensitive_material_class" },
+        "method": { "$ref": "#/$defs/redaction_method" },
+        "digest": { "$ref": "#/$defs/digest" },
+        "custody": { "$ref": "#/$defs/custody_reference" },
+        "hint": {
+          "description": "A short, non-reconstructable display hint (e.g. last 4 of an already-tokenized reference). Never a full secret or full PAN.",
+          "type": "string",
+          "maxLength": 8
+        }
+      },
+      "additionalProperties": false
+    },
+    "monetary_amount": {
+      "title": "Monetary amount",
+      "description": "A protocol-neutral amount. `value` is a decimal string to avoid floating-point drift. `currency_code` is a free 3-8 char code and does not bind any specific currency, rail, or chain.",
+      "type": "object",
+      "required": ["currency_code", "value"],
+      "properties": {
+        "currency_code": { "type": "string", "pattern": "^[A-Za-z0-9]{3,8}$" },
+        "value": { "type": "string", "pattern": "^-?[0-9]+(\\.[0-9]+)?$" },
+        "exponent": { "type": "integer", "minimum": 0, "maximum": 30 }
+      },
+      "additionalProperties": false
+    },
+    "subject_reference": {
+      "title": "Subject reference",
+      "description": "A generic, protocol-neutral pointer to a party, object, or resource, by opaque id and optional digest. Never embeds the referenced object's sensitive contents.",
+      "type": "object",
+      "required": ["ref_type", "id"],
+      "properties": {
+        "ref_type": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "id": { "$ref": "#/$defs/identifier" },
+        "digest": { "$ref": "#/$defs/digest" }
+      },
+      "additionalProperties": false
+    },
+    "protocol_native_reference": {
+      "title": "Protocol-native reference",
+      "description": "A projection of a protocol-native object into the shared vocabulary. It preserves the native protocol family, version, object type, a content digest, and custody/redaction status. It is a reference to the native object, not a replacement for it, and it must not be treated as, or serialized as, an ARCS receipt or any verifier verdict.",
+      "type": "object",
+      "required": ["protocol_family", "protocol_version", "native_object_type", "digest", "custody"],
+      "properties": {
+        "protocol_family": {
+          "description": "Free-text native protocol family label (e.g. the name of the originating protocol). No specific value is required or privileged by this vocabulary.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        "protocol_version": { "type": "string", "minLength": 1, "maxLength": 64 },
+        "native_object_type": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "digest": { "$ref": "#/$defs/digest" },
+        "custody": { "$ref": "#/$defs/custody_reference" },
+        "redactions": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/redaction_marker" }
+        },
+        "captured_at": { "$ref": "#/$defs/timestamp" }
+      },
+      "additionalProperties": false
+    },
+    "observation_state": {
+      "title": "Observation state",
+      "description": "The outcome vocabulary for a single path-scoped check. Deliberately excludes aggregate-verdict words (trusted, safe, compliant, verified, governed): a single check reports only what it observed on its own path.",
+      "type": "string",
+      "enum": ["satisfied", "not_satisfied", "not_applicable", "indeterminate"]
+    },
+    "check_observation": {
+      "title": "Path-scoped check observation",
+      "description": "One check on one path. Carries no aggregate verdict and makes no claim beyond the single path it names.",
+      "type": "object",
+      "required": ["check_id", "path", "state"],
+      "properties": {
+        "check_id": { "type": "string", "minLength": 1, "maxLength": 128 },
+        "path": {
+          "description": "A path locating what was checked (e.g. a JSON Pointer or dotted field path). Scopes the observation to exactly this location.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1024
+        },
+        "state": { "$ref": "#/$defs/observation_state" },
+        "detail": { "type": "string", "maxLength": 2048 },
+        "evidence_ref": { "$ref": "#/$defs/subject_reference" },
+        "observed_at": { "$ref": "#/$defs/timestamp" }
+      },
+      "additionalProperties": false
+    },
+    "extensions": {
+      "title": "Extension bucket",
+      "description": "Namespaced bucket for protocol-specific or caller-specific attributes. Keeping extensions here preserves closure on the core object while allowing additive, non-authoritative data. Must not carry raw sensitive material; use a redaction_marker instead.",
+      "type": "object",
+      "additionalProperties": true
+    },
+    "object_envelope_fields": {
+      "title": "Common object envelope fields",
+      "description": "Fields every top-level commerce object carries so it is self-describing and versioned.",
+      "type": "object",
+      "properties": {
+        "contract_version": { "$ref": "#/$defs/contract_version" },
+        "object_id": { "$ref": "#/$defs/identifier" },
+        "created_at": { "$ref": "#/$defs/timestamp" }
+      }
+    }
+  }
+}

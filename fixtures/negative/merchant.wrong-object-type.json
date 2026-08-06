@@ -1,0 +1,5 @@
+{
+  "object_type": "widget",
+  "contract_version": "0.1.0",
+  "merchant_ref": { "ref_type": "merchant", "id": "merchant-101" }
+}

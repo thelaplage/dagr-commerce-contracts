@@ -1,0 +1,327 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.authority-references.v0.1.schema.json",
+  "title": "ARCS Ecosystem Authority References v0.1",
+  "description": "Declares authority separately from implementation, candidate implementation, historical implementation, consumer, producer, verifier counterpart, and operational owner roles.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "authorities"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.authority-references.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorities": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/authority_reference"
+      }
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "authority_reference": {
+      "type": "object",
+      "required": [
+        "concern",
+        "constitutional_layer",
+        "semantic_authority",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementations",
+        "consumers",
+        "producers",
+        "verifier_counterparts",
+        "operational_owners",
+        "migration",
+        "assertion_status",
+        "evidence_refs"
+      ],
+      "properties": {
+        "concern": {
+          "type": "string",
+          "minLength": 1
+        },
+        "constitutional_layer": {
+          "$ref": "#/$defs/layer_id"
+        },
+        "semantic_authority": {
+          "$ref": "#/$defs/semantic_authority_ref"
+        },
+        "current_implementation": {
+          "$ref": "#/$defs/implementation_ref_or_null"
+        },
+        "candidate_implementation": {
+          "$ref": "#/$defs/implementation_ref_or_null"
+        },
+        "historical_implementations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_ref"
+          }
+        },
+        "consumers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_ref"
+          }
+        },
+        "producers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_ref"
+          }
+        },
+        "verifier_counterparts": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_ref"
+          }
+        },
+        "operational_owners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/implementation_ref"
+          }
+        },
+        "migration": {
+          "$ref": "#/$defs/migration_state"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status",
+          "description": "Declaration maturity. A declaration is not evidence of implementation; validation is not ratification."
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidence_ref"
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementation_ref": {
+      "type": "object",
+      "required": [
+        "repository",
+        "role"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "$ref": "#/$defs/implementation_role"
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "implementation_ref_or_null": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "$ref": "#/$defs/implementation_ref"
+        }
+      ]
+    },
+    "implementation_role": {
+      "type": "string",
+      "enum": [
+        "semantic_authority",
+        "current_implementation",
+        "candidate_implementation",
+        "historical_implementation",
+        "consumer",
+        "producer",
+        "emitter",
+        "provider",
+        "adapter",
+        "runtime_binding",
+        "verifier_counterpart",
+        "operational_owner",
+        "schema_coordination",
+        "planned_role",
+        "not_applicable"
+      ]
+    },
+    "layer_id": {
+      "type": "string",
+      "enum": [
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5",
+        "L6",
+        "L7",
+        "L8",
+        "L9",
+        "L10",
+        "L11"
+      ]
+    },
+    "migration_state": {
+      "type": "object",
+      "required": [
+        "authorized",
+        "record_ref"
+      ],
+      "properties": {
+        "authorized": {
+          "type": "boolean"
+        },
+        "record_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "semantic_authority_ref": {
+      "type": "object",
+      "required": [
+        "repository",
+        "artifact_ref",
+        "version",
+        "status"
+      ],
+      "properties": {
+        "repository": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "artifact_ref": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "resolved",
+            "unresolved",
+            "distributed",
+            "historical",
+            "ratified",
+            "canonical"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

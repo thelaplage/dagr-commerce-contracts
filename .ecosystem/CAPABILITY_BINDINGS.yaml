@@ -1,0 +1,16 @@
+schema: "https://schemas.arcs.dev/ecosystem/ecosystem.capability-bindings.v0.1.schema.json"
+schema_version: "0.1"
+repository: "dagr-commerce-contracts"
+native_registry_refs: []
+declarations:
+  defines: []
+  implements: []
+  consumes: []
+  extends: []
+  deprecates: []
+# This repository declares no ecosystem-wide capabilities. The commerce
+# vocabulary is a set of schema CONTRACTS (declared in CONTRACT_BINDINGS.yaml),
+# not a capability that some other named authority defines. No governing
+# capability process has authorized a dagr-commerce.* capability, and this
+# repository is not a capability-semantics authority, so all five arrays are
+# intentionally empty.

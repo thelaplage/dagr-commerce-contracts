@@ -1,0 +1,428 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.arcs.dev/ecosystem/ecosystem.conformance-projection.v0.1.schema.json",
+  "title": "ARCS Ecosystem Conformance Projection v0.1",
+  "description": "Projects conformance posture against an external standard, including level labels, status, gates, test command references, proof-pack references, and unresolved exceptions. Levels A-E are labels for evidence conforming, independently verifiable, enforced governed action, reproducible integration, and cross-implementation portable; governing doctrine owns their semantics.",
+  "type": "object",
+  "required": [
+    "schema",
+    "schema_version",
+    "repository",
+    "standard_identifier",
+    "standard_version",
+    "declared_conformance_level",
+    "status",
+    "relationship",
+    "assertion_status",
+    "authority_repository",
+    "authority_artifact_ref",
+    "authority_version",
+    "native_registry_refs",
+    "passed_gates",
+    "failed_gates",
+    "not_applicable_gates",
+    "test_command_refs",
+    "proof_pack_refs",
+    "unresolved_exceptions",
+    "evidence_refs",
+    "integrity"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "const": "https://schemas.arcs.dev/ecosystem/ecosystem.conformance-projection.v0.1.schema.json"
+    },
+    "schema_version": {
+      "type": "string",
+      "const": "0.1"
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "standard_identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "standard_version": {
+      "$ref": "#/$defs/version"
+    },
+    "declared_conformance_level": {
+      "$ref": "#/$defs/conformance_level"
+    },
+    "status": {
+      "$ref": "#/$defs/conformance_status"
+    },
+    "relationship": {
+      "$ref": "#/$defs/relationship"
+    },
+    "assertion_status": {
+      "$ref": "#/$defs/assertion_status",
+      "description": "Strength of this conformance declaration; not proof by itself."
+    },
+    "authority_repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_artifact_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority_version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "native_registry_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/native_registry_ref"
+      }
+    },
+    "passed_gates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gate_result"
+      }
+    },
+    "failed_gates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/failed_gate_result"
+      }
+    },
+    "not_applicable_gates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/gate_result"
+      }
+    },
+    "test_command_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/test_command_ref"
+      }
+    },
+    "proof_pack_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/proof_pack_ref"
+      }
+    },
+    "unresolved_exceptions": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/evidence_ref"
+      }
+    },
+    "integrity": {
+      "$ref": "#/$defs/integrity_metadata"
+    },
+    "ownership_transition": {
+      "$ref": "#/$defs/ownership_transition"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "assertion_status": {
+      "type": "string",
+      "enum": [
+        "declared",
+        "planned",
+        "partial",
+        "implemented",
+        "fixture_reachable",
+        "recorded_end_to_end",
+        "validated",
+        "independently_verified",
+        "ratified",
+        "canonical",
+        "not_evaluated",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "conformance_level": {
+      "type": "string",
+      "enum": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
+    },
+    "conformance_status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "partial",
+        "passed",
+        "failed",
+        "blocked",
+        "not_evaluated",
+        "validated",
+        "verified"
+      ]
+    },
+    "evidence_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "relationship": {
+          "$ref": "#/$defs/relationship"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "failed_gate_result": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "description",
+        "reason"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        }
+      },
+      "additionalProperties": false
+    },
+    "gate_result": {
+      "type": "object",
+      "required": [
+        "gate_id",
+        "description"
+      ],
+      "properties": {
+        "gate_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidence_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        }
+      },
+      "additionalProperties": false
+    },
+    "integrity_metadata": {
+      "type": "object",
+      "properties": {
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "byte_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "line_count": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "ratification_record_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "native_registry_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "path",
+        "authority",
+        "summary_role"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary_role": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "ownership_transition": {
+      "type": "object",
+      "required": [
+        "current_owner",
+        "candidate_verified",
+        "migration_authorized"
+      ],
+      "properties": {
+        "current_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_owner": {
+          "type": "string",
+          "minLength": 1
+        },
+        "candidate_verified": {
+          "type": "boolean"
+        },
+        "migration_authorized": {
+          "type": "boolean"
+        },
+        "migration_record_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "proof_pack_ref": {
+      "type": "object",
+      "required": [
+        "proof_pack_id",
+        "version",
+        "assertion_status",
+        "authority_repository",
+        "authority_artifact_ref"
+      ],
+      "properties": {
+        "proof_pack_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "$ref": "#/$defs/version"
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "authority_repository": {
+          "type": "string",
+          "minLength": 1
+        },
+        "authority_artifact_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "path_or_ref": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "relationship": {
+      "type": "string",
+      "enum": [
+        "consumes",
+        "implements",
+        "emits",
+        "validates",
+        "projects",
+        "renders",
+        "operates",
+        "planned",
+        "partial",
+        "not_applicable",
+        "deprecated_reference"
+      ]
+    },
+    "test_command_ref": {
+      "type": "object",
+      "required": [
+        "id",
+        "command",
+        "assertion_status"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "command": {
+          "type": "string",
+          "minLength": 1
+        },
+        "assertion_status": {
+          "$ref": "#/$defs/assertion_status"
+        },
+        "notes": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^(v)?\\d+\\.\\d+(\\.\\d+)?([_-][A-Za-z0-9][A-Za-z0-9._-]*)?$"
+    }
+  }
+}

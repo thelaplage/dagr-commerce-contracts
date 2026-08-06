@@ -1,0 +1,141 @@
+{
+  "policy_id": "dagr-commerce-contracts.version-policy.v0.1",
+  "vocabulary_version": "0.1.0",
+  "schema_draft": "https://json-schema.org/draft/2020-12/schema",
+  "identifier_namespace": "https://contracts.dagr-commerce.dev/schema/v0.1/",
+  "identifier_namespace_note": "Schema $id URIs are stable, repository-local, versioned identifiers only. They are not a published, registered, or upstream standard, and network resolution is neither required nor implied.",
+  "versioning": {
+    "scheme": "semver-major.minor.patch",
+    "patch": "editorial or additive-optional changes; positive fixtures remain valid",
+    "minor": "additive changes (new optional fields, new object types); positive fixtures remain valid",
+    "major": "breaking changes; requires a new versioned directory and a documented migration",
+    "compatibility_guarantee": "Within a major.minor line, changes are additive and non-breaking to the committed positive fixtures.",
+    "deprecation": "Deprecated fields are marked in the schema description and retained for at least one minor version before removal in a major version."
+  },
+  "claim_discipline": {
+    "no_aggregate_verdict": "No object or report emits an aggregate trusted/safe/compliant/verified/governed verdict. Outcomes are per-path/per-check observation states only.",
+    "protocol_neutral": "No contract requires a specific commerce protocol, payment rail, chain, PSP, merchant, wallet, or DAGR transport.",
+    "projection_not_receipt": "The evidence-envelope references native payloads by digest/custody and is not an ARCS receipt or a verifier verdict."
+  },
+  "schemas": [
+    {
+      "file": "schemas/commerce/v0.1/agent-identity.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/agent-identity.schema.json",
+      "title": "Agent Identity v0.1",
+      "sha256": "4c2db48fa25c89b8e75a9655bc94c284642c1599720f64f7d089021c53543204",
+      "byte_length": 1450
+    },
+    {
+      "file": "schemas/commerce/v0.1/cart.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/cart.schema.json",
+      "title": "Cart v0.1",
+      "sha256": "b33cdcacd98f42c5d0e4a1b04c7359e197d88b0afdf417f78f7542f1da0534e7",
+      "byte_length": 1833
+    },
+    {
+      "file": "schemas/commerce/v0.1/check-observation.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/check-observation.schema.json",
+      "title": "Check Observation Set v0.1",
+      "sha256": "f3cf62ab268de11befb697e0ab0bf89004eaccbb0852ffa2c9d038afc31dabc9",
+      "byte_length": 1271
+    },
+    {
+      "file": "schemas/commerce/v0.1/common.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/common.schema.json",
+      "title": "Commerce Contracts Common Definitions v0.1",
+      "sha256": "05168bbb684276b06aedfe48917e39756f2b4c445577a6b840e14c2c89b6ca34",
+      "byte_length": 9381
+    },
+    {
+      "file": "schemas/commerce/v0.1/evidence-envelope.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/evidence-envelope.schema.json",
+      "title": "Evidence Envelope v0.1",
+      "sha256": "0f5a2aea5dd1042106279f4b76861ae42766ca9e9442eff772487a5168906310",
+      "byte_length": 2404
+    },
+    {
+      "file": "schemas/commerce/v0.1/fulfillment.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/fulfillment.schema.json",
+      "title": "Fulfillment v0.1",
+      "sha256": "84735c1be08fad281f905273356e7dc2b3bce92663ae9a200fa0330d228df89b",
+      "byte_length": 1514
+    },
+    {
+      "file": "schemas/commerce/v0.1/intent.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/intent.schema.json",
+      "title": "Commerce Intent v0.1",
+      "sha256": "996d1c046d51048aec975164ed98f4ff458b8a201c7dcc39d87e665a8dc15b2b",
+      "byte_length": 1698
+    },
+    {
+      "file": "schemas/commerce/v0.1/merchant.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/merchant.schema.json",
+      "title": "Merchant v0.1",
+      "sha256": "f9f742e14dcd0f268493faa51b80bf98ba16a29a967f452535baf1f02f6f13e0",
+      "byte_length": 1312
+    },
+    {
+      "file": "schemas/commerce/v0.1/native-evidence.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/native-evidence.schema.json",
+      "title": "Native Evidence v0.1",
+      "sha256": "e671db81ff74b7fe6ad8d077d4edc4428d67adcd7180e1f0e1c72d59cad606e2",
+      "byte_length": 1298
+    },
+    {
+      "file": "schemas/commerce/v0.1/offer.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/offer.schema.json",
+      "title": "Offer v0.1",
+      "sha256": "86f98dc536dd0cc0a0a525b3023545ca16d57fb56447795d8ecb5c68589c359a",
+      "byte_length": 1660
+    },
+    {
+      "file": "schemas/commerce/v0.1/order.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/order.schema.json",
+      "title": "Order v0.1",
+      "sha256": "ce9a223671a9b8ccefc4c13b3c369de03197e75bd89a742365550802b2eaeb95",
+      "byte_length": 1405
+    },
+    {
+      "file": "schemas/commerce/v0.1/payment-authorization.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/payment-authorization.schema.json",
+      "title": "Payment Authorization v0.1",
+      "sha256": "df07f86f52df29c3b1caa68122355734106963bb0fe59838d92f614aa201c24c",
+      "byte_length": 2005
+    },
+    {
+      "file": "schemas/commerce/v0.1/payment-requirement.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/payment-requirement.schema.json",
+      "title": "Payment Requirement v0.1",
+      "sha256": "6e1a250cd31dd5f2124a2ab231106e624137acf55549ff33cac8788b67df92b5",
+      "byte_length": 1748
+    },
+    {
+      "file": "schemas/commerce/v0.1/principal-authorization.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/principal-authorization.schema.json",
+      "title": "Principal Authorization v0.1",
+      "sha256": "8fe5064819c8c44e1a3fcd77ed061c8be4d1a7ff3ca31d2ab657e3b8d028d6fe",
+      "byte_length": 2205
+    },
+    {
+      "file": "schemas/commerce/v0.1/refund.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/refund.schema.json",
+      "title": "Refund v0.1",
+      "sha256": "0e0cfb86302dd2ae9e1bed2533f571a51bb789ff98e7c073532ee64bdf8752a0",
+      "byte_length": 1662
+    },
+    {
+      "file": "schemas/commerce/v0.1/settlement.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/settlement.schema.json",
+      "title": "Settlement v0.1",
+      "sha256": "f63bab6113295bddf0219a78e35883611d5b1d3a458d6c8f8e8ad19c3fc73f27",
+      "byte_length": 1747
+    },
+    {
+      "file": "schemas/commerce/v0.1/spend-constraints.schema.json",
+      "id": "https://contracts.dagr-commerce.dev/schema/v0.1/spend-constraints.schema.json",
+      "title": "Spend Constraints v0.1",
+      "sha256": "7bb36789b12b119b701aeb135e4af5a89e18836f497924e8bb6264cad54efc0a",
+      "byte_length": 2029
+    }
+  ]
+}

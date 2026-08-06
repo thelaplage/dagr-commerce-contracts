@@ -1,0 +1,26 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:08:00Z",
+  "authorization_id": "payauth-0001",
+  "amount": { "currency_code": "USD", "value": "10.00" },
+  "payer_ref": { "ref_type": "principal", "id": "principal-abc" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-101" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "preq-0001" },
+  "constraints_ref": { "ref_type": "spend_constraints", "id": "constraints-1" },
+  "one_time": true,
+  "expires_at": "2026-08-05T12:38:00Z",
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "payment_credential",
+    "method": "tokenized_reference",
+    "hint": "x4242",
+    "custody": {
+      "disposition": "external_store",
+      "location_hint": "vault-ref-0001"
+    }
+  },
+  "observations": [
+    { "check_id": "payauth.amount_matches_requirement", "path": "$.amount.value", "state": "satisfied" }
+  ]
+}

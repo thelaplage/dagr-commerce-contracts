@@ -1,0 +1,17 @@
+{
+  "object_type": "offer",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:04:00Z",
+  "offer_id": "offer-9001",
+  "merchant_ref": { "ref_type": "merchant", "id": "merchant-101" },
+  "items": [
+    {
+      "item_ref": { "ref_type": "sku", "id": "sku-1" },
+      "description": "One widget",
+      "unit_amount": { "currency_code": "USD", "value": "10.00" },
+      "quantity": 1
+    }
+  ],
+  "total": { "currency_code": "USD", "value": "10.00" },
+  "valid_until": "2026-08-05T13:00:00Z"
+}

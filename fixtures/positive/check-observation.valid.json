@@ -1,0 +1,12 @@
+{
+  "object_type": "check_observation_set",
+  "contract_version": "0.1.0",
+  "created_at": "2026-08-05T12:14:00Z",
+  "observation_set_id": "obs-set-0001",
+  "subject_ref": { "ref_type": "payment_authorization", "id": "payauth-0001" },
+  "observations": [
+    { "check_id": "amount.within_cap", "path": "$.amount.value", "state": "satisfied" },
+    { "check_id": "payee.in_allowed_merchants", "path": "$.payee_ref.id", "state": "satisfied" },
+    { "check_id": "expiry.not_passed", "path": "$.expires_at", "state": "not_applicable", "detail": "no clock available in this offline check" }
+  ]
+}

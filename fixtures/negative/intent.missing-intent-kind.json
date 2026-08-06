@@ -1,0 +1,6 @@
+{
+  "object_type": "intent",
+  "contract_version": "0.1.0",
+  "intent_id": "intent-neg-1",
+  "description": "Missing the required intent_kind field."
+}
