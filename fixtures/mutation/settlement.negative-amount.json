@@ -1,0 +1,7 @@
+{
+  "object_type": "settlement",
+  "contract_version": "0.1.0",
+  "settlement_id": "settle-0001",
+  "settlement_state": "settled_observed",
+  "amount": { "currency_code": "USD", "value": "-999.99" }
+}

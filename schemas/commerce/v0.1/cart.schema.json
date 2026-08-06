@@ -4,7 +4,7 @@
   "title": "Cart v0.1",
   "description": "A protocol-neutral projection of a cart of selected lines with a revision counter. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "cart_id", "lines"],
+  "required": ["object_type", "contract_version", "cart_id", "lines"],
   "properties": {
     "object_type": { "const": "cart" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -21,14 +21,14 @@
           "item_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
           "offer_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
           "description": { "type": "string", "maxLength": 1024 },
-          "unit_amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
-          "quantity": { "type": "number", "minimum": 0 }
+          "unit_amount": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
+          "quantity": { "type": "integer", "minimum": 1 }
         },
         "additionalProperties": false
       }
     },
-    "subtotal": { "$ref": "common.schema.json#/$defs/monetary_amount" },
-    "total": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "subtotal": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
+    "total": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
     "observations": {
       "type": "array",

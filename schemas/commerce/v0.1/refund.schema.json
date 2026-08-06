@@ -4,7 +4,7 @@
   "title": "Refund v0.1",
   "description": "A protocol-neutral projection of a refund or cancellation event. A refund references the original order and payment authorization by reference; it never rewrites or replaces the original authorization object. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "refund_id", "refund_state"],
+  "required": ["object_type", "contract_version", "refund_id", "refund_state"],
   "properties": {
     "object_type": { "const": "refund" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -15,7 +15,7 @@
       "description": "Reference to the original payment authorization/settlement. Referenced, never mutated.",
       "$ref": "common.schema.json#/$defs/subject_reference"
     },
-    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "amount": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "refund_state": {
       "type": "string",
       "enum": ["requested", "refunded_observed", "denied_observed", "uncertain"]

@@ -68,6 +68,21 @@
       "file": "negative/evidence-envelope.empty-projections.json",
       "schema": "evidence-envelope.schema.json",
       "expect": { "keyword": "minItems", "path": "$.projections" }
+    },
+    {
+      "file": "negative/intent.smuggled-extension-key.json",
+      "schema": "intent.schema.json",
+      "expect": { "keyword": "not", "path": "$.extensions", "message_contains": "card_number" }
+    },
+    {
+      "file": "negative/intent.bad-timestamp.json",
+      "schema": "intent.schema.json",
+      "expect": { "keyword": "format", "path": "$.created_at", "message_contains": "date-time" }
+    },
+    {
+      "file": "negative/order.missing-contract-version.json",
+      "schema": "order.schema.json",
+      "expect": { "keyword": "required", "path": "$", "message_contains": "contract_version" }
     }
   ],
   "mutation": [
@@ -106,6 +121,36 @@
       "schema": "native-evidence.schema.json",
       "base": "positive/native-evidence.valid.json",
       "expect": { "keyword": "minLength", "path": "$.native.digest.value" }
+    },
+    {
+      "file": "mutation/intent.nested-smuggled-extension.json",
+      "schema": "intent.schema.json",
+      "base": "positive/intent.valid.json",
+      "expect": { "keyword": "anyOf", "path": "$.extensions.detail", "message_contains": "bearer_token" }
+    },
+    {
+      "file": "mutation/native-evidence.nonhex-digest-value.json",
+      "schema": "native-evidence.schema.json",
+      "base": "positive/native-evidence.valid.json",
+      "expect": { "keyword": "pattern", "path": "$.native.digest.value" }
+    },
+    {
+      "file": "mutation/evidence-envelope.digest-only-no-digest.json",
+      "schema": "evidence-envelope.schema.json",
+      "base": "positive/evidence-envelope.valid.json",
+      "expect": { "keyword": "required", "path": "$.redactions[0]", "message_contains": "digest" }
+    },
+    {
+      "file": "mutation/settlement.negative-amount.json",
+      "schema": "settlement.schema.json",
+      "base": "positive/settlement.valid.json",
+      "expect": { "keyword": "pattern", "path": "$.amount.value" }
+    },
+    {
+      "file": "mutation/cart.zero-quantity-line.json",
+      "schema": "cart.schema.json",
+      "base": "positive/cart.valid.json",
+      "expect": { "keyword": "minimum", "path": "$.lines[0].quantity" }
     }
   ]
 }

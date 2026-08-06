@@ -4,7 +4,7 @@
   "title": "Principal Authorization v0.1",
   "description": "A protocol-neutral projection of a principal authorizing an agent to act within a scope. The authorizing material itself (mandate, signed grant, token) is never embedded raw: it is carried as a redaction marker or a protocol-native reference. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "authorization_id", "principal_ref", "agent_ref", "authorization_material"],
+  "required": ["object_type", "contract_version", "authorization_id", "principal_ref", "agent_ref", "authorization_material"],
   "properties": {
     "object_type": { "const": "principal_authorization" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },

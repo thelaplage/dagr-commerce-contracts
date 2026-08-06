@@ -4,7 +4,7 @@
   "title": "Fulfillment v0.1",
   "description": "A protocol-neutral projection of an observed fulfillment/delivery event. State is an operational observation including an explicit uncertain state; delivery atomicity relative to settlement is preserved by keeping settlement and fulfillment as distinct objects. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "fulfillment_id", "fulfillment_state"],
+  "required": ["object_type", "contract_version", "fulfillment_id", "fulfillment_state"],
   "properties": {
     "object_type": { "const": "fulfillment" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },

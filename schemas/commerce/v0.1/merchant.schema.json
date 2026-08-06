@@ -4,7 +4,7 @@
   "title": "Merchant v0.1",
   "description": "A protocol-neutral projection of a merchant/seller party. Carries no merchant-of-record binding and requires no specific PSP, rail, or platform. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "merchant_ref"],
+  "required": ["object_type", "contract_version", "merchant_ref"],
   "properties": {
     "object_type": { "const": "merchant" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },

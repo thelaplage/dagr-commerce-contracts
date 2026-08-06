@@ -45,7 +45,26 @@ The rule is enforced by the schema shapes, not merely by convention:
   there is no field that accepts a private key.
 - All core objects are **closed** (`additionalProperties: false`) with a single
   additive `extensions` bucket, so a field such as `card_number` cannot be
-  smuggled in (`negative/payment-authorization.smuggled-pan-field.json`).
+  smuggled in at the top level
+  (`negative/payment-authorization.smuggled-pan-field.json`).
+- The `extensions` bucket is itself closed against sensitive material. It is a
+  `safe_extension_object`: its property names are validated by
+  `propertyNames → safe_extension_key`, which **rejects** names that resemble
+  sensitive fields (card/pan/cvv/cvc/bearer/secret/password/private_key/
+  mandate_token/account_number/iban/routing/ssn/api_key/token/…). The match is
+  case-insensitive and boundary-aware (so `pan` is rejected but `japan`/`span`
+  are not), and because each nested value is itself a `safe_extension_object`,
+  a sensitive key is rejected at **any nesting depth**. Proof:
+  `negative/intent.smuggled-extension-key.json` (top-level `extensions.card_number`)
+  and `mutation/intent.nested-smuggled-extension.json`
+  (nested `extensions.detail.bearer_token`).
+- A `redaction_marker`'s `method` is bound to its evidence: `digest_only`
+  requires a `digest`, `custody_reference` requires a `custody`, and `masked`
+  requires a `hint` (`mutation/evidence-envelope.digest-only-no-digest.json`).
+- A `digest` value's shape is bound to its `algorithm` and `encoding` (a hex
+  digest must be hexadecimal and the length the algorithm implies), so a stub
+  value such as `"x"` is rejected
+  (`mutation/native-evidence.nonhex-digest-value.json`).
 - `protocol_native_reference` carries the native payload by `digest` + `custody`
   and an optional list of `redaction_marker`s; the payload is never embedded.
 
@@ -55,5 +74,7 @@ The rule is enforced by the schema shapes, not merely by convention:
   identifier, or a PAN-equivalent value. Placeholders used in intentionally
   invalid fixtures are obviously non-real (e.g. `PLACEHOLDER-NOT-A-REAL-PAN`).
 - The `no-raw-sensitive-material` check in the reference validator scans every
-  positive fixture for raw scalars under sensitive-looking field names and fails
-  the gate if any is found.
+  committed fixture (positive, negative, and mutation) for sensitive-looking
+  property names at any nesting depth. A hit in a positive fixture fails the
+  gate; the intentional smuggle keys in the negative/mutation fixtures are
+  expected and are rejected by schema validation itself (defense in depth).

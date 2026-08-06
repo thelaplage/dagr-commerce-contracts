@@ -4,7 +4,7 @@
   "title": "Offer v0.1",
   "description": "A protocol-neutral projection of an offer of goods or services. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "offer_id"],
+  "required": ["object_type", "contract_version", "offer_id"],
   "properties": {
     "object_type": { "const": "offer" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -19,13 +19,13 @@
         "properties": {
           "item_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
           "description": { "type": "string", "maxLength": 1024 },
-          "unit_amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+          "unit_amount": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
           "quantity": { "type": "number", "minimum": 0 }
         },
         "additionalProperties": false
       }
     },
-    "total": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "total": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "valid_until": { "$ref": "common.schema.json#/$defs/timestamp" },
     "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
     "observations": {

@@ -31,11 +31,13 @@ Exit codes
 from __future__ import annotations
 
 import argparse
+import datetime as _dt
 import json
 import re
 import sys
 from pathlib import Path
 from typing import Any, Iterable
+from urllib.parse import urlsplit
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 COMMERCE_DIR = REPO_ROOT / "schemas" / "commerce" / "v0.1"
@@ -64,17 +66,90 @@ ECOSYSTEM_FILE_TO_SCHEMA = {
     "RELEASE_STATE.yaml": "ecosystem.release-state.v0.1.schema.json",
 }
 
-# Field-name substrings that must never carry a raw scalar value in a fixture.
-SENSITIVE_FIELD_HINTS = (
-    "private_key",
-    "secret",
-    "bearer",
-    "password",
-    "pan",
-    "card_number",
-    "cvv",
-    "mandate_token",
+# Boundary-aware, case-insensitive matcher for property names that resemble
+# sensitive material. Word boundaries are the start/end of the key or an
+# underscore/hyphen, so "pan" matches but "japan"/"span" do not. This mirrors the
+# structural rejection pattern in common.schema.json#/$defs/safe_extension_key so
+# the validator is a defense-in-depth check over what the schema already rejects.
+SENSITIVE_KEY_RE = re.compile(
+    r"(?i)(^|[_-])("
+    r"card|pan|cvv|cvc|bearer|secret|client_secret|password|passwd|"
+    r"private_key|privatekey|mandate_token|account_number|iban|routing|ssn|"
+    r"api_key|apikey|access_token|refresh_token|token"
+    r")($|[_-])"
 )
+
+# RFC 3339 date-time, e.g. 2026-08-05T12:00:00Z or 2026-08-05T12:00:00.5+02:00.
+_RFC3339_DATE_TIME_RE = re.compile(
+    r"^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})"
+    r"[Tt](?P<hour>\d{2}):(?P<minute>\d{2}):(?P<second>\d{2})(\.\d+)?"
+    r"([Zz]|[+-]\d{2}:\d{2})$"
+)
+
+
+def _is_rfc3339_date_time(value: Any) -> bool:
+    """Strict RFC 3339 date-time check.
+
+    Rejects non-timestamps such as "not-a-timestamp" and impossible calendar
+    dates; accepts "2026-08-05T12:00:00Z". Implemented without optional libraries
+    (no rfc3339-validator dependency), so the gate is hermetic.
+    """
+    if not isinstance(value, str):
+        return True
+    m = _RFC3339_DATE_TIME_RE.match(value)
+    if not m:
+        return False
+    year, month, day = int(m["year"]), int(m["month"]), int(m["day"])
+    hour, minute, second = int(m["hour"]), int(m["minute"]), int(m["second"])
+    if not (1 <= month <= 12 and 1 <= day <= 31):
+        return False
+    if hour > 23 or minute > 59 or second > 60:  # allow leap second :60
+        return False
+    try:
+        _dt.date(year, month, day)  # rejects e.g. 2026-02-30
+    except ValueError:
+        return False
+    return True
+
+
+def _is_uri(value: Any) -> bool:
+    """Minimal strict URI check: require a scheme and an authority or path.
+
+    Rejects bare strings without a scheme; accepts e.g.
+    https://github.com/owner/repo. No optional libraries required.
+    """
+    if not isinstance(value, str):
+        return True
+    try:
+        parts = urlsplit(value)
+    except Exception:
+        return False
+    if not parts.scheme:
+        return False
+    return bool(parts.netloc or parts.path)
+
+
+_FORMAT_CHECKER = None
+
+
+def _get_format_checker():
+    """Build (once) a strict jsonschema FormatChecker for date-time and uri.
+
+    Passed to every Draft202012Validator so the described `format: date-time`
+    and `format: uri` constraints are actually enforced, not merely annotated.
+    """
+    global _FORMAT_CHECKER
+    if _FORMAT_CHECKER is not None:
+        return _FORMAT_CHECKER
+    try:
+        from jsonschema import FormatChecker
+    except Exception as exc:  # pragma: no cover - environment guard
+        raise DependencyMissing(f"jsonschema missing: {exc!r}") from exc
+    checker = FormatChecker()
+    checker.checks("date-time")(_is_rfc3339_date_time)
+    checker.checks("uri")(_is_uri)
+    _FORMAT_CHECKER = checker
+    return checker
 
 
 class DependencyMissing(Exception):
@@ -167,7 +242,9 @@ def check_schemas_parse() -> CheckResult:
 def _validator_for(schema_name: str, registry, Draft202012Validator):
     schema_path = COMMERCE_DIR / schema_name
     schema = json.loads(schema_path.read_text())
-    return Draft202012Validator(schema, registry=registry)
+    return Draft202012Validator(
+        schema, registry=registry, format_checker=_get_format_checker()
+    )
 
 
 def check_positive_fixtures(index: dict, registry, Draft202012Validator) -> CheckResult:
@@ -270,7 +347,9 @@ def check_ecosystem_declarations(registry, Draft202012Validator) -> CheckResult:
             failures.append(f"{decl_name}: not valid YAML ({exc})")
             continue
         schema = json.loads(schema_path.read_text())
-        validator = Draft202012Validator(schema, registry=registry)
+        validator = Draft202012Validator(
+            schema, registry=registry, format_checker=_get_format_checker()
+        )
         errors = sorted(validator.iter_errors(instance), key=lambda e: e.json_path)
         if errors:
             msgs = "; ".join(f"{e.json_path}: {e.message}" for e in errors[:3])
@@ -334,30 +413,68 @@ def check_no_aggregate_verdict() -> CheckResult:
     )
 
 
+def _walk_keys(value: Any, path: str = "$"):
+    """Yield (parent_path, key) for every object property name at any depth."""
+    if isinstance(value, dict):
+        for k, v in value.items():
+            yield path, k
+            yield from _walk_keys(v, f"{path}.{k}")
+    elif isinstance(value, list):
+        for i, v in enumerate(value):
+            yield from _walk_keys(v, f"{path}[{i}]")
+
+
 def check_no_raw_sensitive_material() -> CheckResult:
-    """No positive fixture carries a raw scalar under a sensitive-looking field."""
-    failures: list[str] = []
+    """Defense-in-depth: no sensitive-looking KEY name at any depth in a positive fixture.
+
+    Scans ALL committed fixtures (positive, negative, mutation) and flags any
+    property name that resembles sensitive material (card/pan/cvv/bearer/secret/
+    password/private_key/token/...) at ANY nesting depth, not only leaf values
+    under sensitive field names. A hit in a positive fixture fails the gate. A hit
+    in a negative/mutation fixture is an intentional smuggle fixture whose
+    rejection is proven by SCHEMA validation (the negative/mutation checks), so it
+    is reported for visibility but does not fail this defense-in-depth scan.
+    """
+    positive_failures: list[str] = []
+    smuggle_hits: list[str] = []
     files = 0
-    for fixture_file in sorted((FIXTURES_DIR / "positive").rglob("*.json")):
+    for fixture_file in sorted(FIXTURES_DIR.rglob("*.json")):
+        if fixture_file.name == "INDEX.json":
+            continue
         files += 1
         try:
             instance = json.loads(fixture_file.read_text())
         except Exception:
             continue
         rel = fixture_file.relative_to(FIXTURES_DIR)
-        for path, value in _walk(instance):
-            leaf = path.rsplit(".", 1)[-1].split("[")[0].lower()
-            if any(hint in leaf for hint in SENSITIVE_FIELD_HINTS):
-                if isinstance(value, (str, int)):
-                    failures.append(
-                        f"{rel}{path}: raw sensitive-looking scalar; use a redaction_marker or digest"
+        is_positive = bool(rel.parts) and rel.parts[0] == "positive"
+        for parent_path, key in _walk_keys(instance):
+            if SENSITIVE_KEY_RE.search(key):
+                loc = f"{rel}{parent_path}.{key}"
+                if is_positive:
+                    positive_failures.append(
+                        f"{loc}: sensitive-looking key in a positive fixture; "
+                        "use a redaction_marker or digest"
                     )
-    passed = not failures
+                else:
+                    smuggle_hits.append(loc)
+    passed = not positive_failures
+    if passed:
+        summary = (
+            f"scanned {files} fixtures (all classes) for sensitive-looking keys at any "
+            f"depth; 0 in positive fixtures, {len(smuggle_hits)} expected smuggle key(s) "
+            "in negative/mutation fixtures (rejected by schema validation)"
+        )
+    else:
+        summary = (
+            f"scanned {files} fixtures; found {len(positive_failures)} sensitive-looking "
+            "key(s) in positive fixtures"
+        )
     return CheckResult(
         "no-raw-sensitive-material",
         passed,
-        f"scanned {files} positive fixtures for raw sensitive material",
-        failures,
+        summary,
+        positive_failures,
     )
 
 

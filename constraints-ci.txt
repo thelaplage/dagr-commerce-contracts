@@ -1,0 +1,25 @@
+# Hermetic CI pin set for dagr-commerce-contracts.
+#
+# CI must not float to "latest" packages: the reference-validator gate and the
+# test suite are only reproducible against a fixed dependency set. These are the
+# exact versions the gate was validated against.
+#
+# Direct dependencies:
+jsonschema==4.26.0
+referencing==0.37.0
+PyYAML==6.0.3
+pytest==9.1.1
+#
+# Transitive dependencies (pinned so the resolver cannot float them):
+attrs==26.1.0
+jsonschema-specifications==2025.9.1
+rpds-py==2026.6.3
+iniconfig==2.3.0
+packaging==26.3
+pluggy==1.6.0
+Pygments==2.20.0
+#
+# NOTE: exact == pins make the install reproducible but do not yet verify
+# artifact integrity. Adding `--require-hashes` with per-wheel --hash entries is
+# a follow-up; it was deferred here because hashes could not be resolved offline
+# in this worktree.

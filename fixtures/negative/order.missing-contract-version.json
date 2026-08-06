@@ -1,0 +1,6 @@
+{
+  "object_type": "order",
+  "order_id": "order-0001",
+  "order_state": "created",
+  "amount": { "currency_code": "USD", "value": "20.00" }
+}

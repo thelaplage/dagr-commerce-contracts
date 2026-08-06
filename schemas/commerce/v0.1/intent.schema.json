@@ -4,7 +4,7 @@
   "title": "Commerce Intent v0.1",
   "description": "A protocol-neutral projection of what a principal intends to do (e.g. purchase, subscribe, pay, refund). Does not bind any specific commerce protocol, payment rail, chain, PSP, merchant, or wallet. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "intent_id", "intent_kind"],
+  "required": ["object_type", "contract_version", "intent_id", "intent_kind"],
   "properties": {
     "object_type": { "const": "intent" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -19,7 +19,7 @@
     "description": { "type": "string", "maxLength": 2048 },
     "principal_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
     "subject_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
-    "amount_limit": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "amount_limit": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "constraints_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
     "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
     "observations": {

@@ -1,0 +1,9 @@
+{
+  "object_type": "intent",
+  "contract_version": "0.1.0",
+  "intent_id": "intent-neg-ext-1",
+  "intent_kind": "purchase",
+  "extensions": {
+    "card_number": "PLACEHOLDER-NOT-A-REAL-PAN"
+  }
+}

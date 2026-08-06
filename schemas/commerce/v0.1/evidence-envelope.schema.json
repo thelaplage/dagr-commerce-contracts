@@ -4,7 +4,7 @@
   "title": "Evidence Envelope v0.1",
   "description": "A protocol-neutral evidence projection. It bundles references to protocol-native payloads (by digest and custody), references to commerce objects, path-scoped check observations, and redaction markers. It is a projection/reference layer only. It is NOT an ARCS receipt, NOT a verifier verdict, and NOT a coordination record; it carries no aggregate trusted/safe/compliant/verified/governed result. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "envelope_id", "envelope_kind", "projections"],
+  "required": ["object_type", "contract_version", "envelope_id", "envelope_kind", "projections"],
   "properties": {
     "object_type": { "const": "evidence_envelope" },
     "envelope_kind": {
