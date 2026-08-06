@@ -2,7 +2,7 @@
 
 ## Requirements
 
-- Python 3.9+
+- Python 3.11+
 - `jsonschema`, `referencing`, `PyYAML` (and `pytest` to run the test suite)
 
 ```

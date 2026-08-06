@@ -51,7 +51,8 @@ hermetic. Every result below is from actual execution in this worktree.
 
 Environment: isolated venv, CPython 3.14, pinned deps from `constraints-ci.txt`
 (`jsonschema==4.26.0`, `referencing==0.37.0`, `PyYAML==6.0.3`, `pytest==9.1.1`
-plus transitive pins). CI additionally runs the 3.9/3.12 matrix.
+plus transitive pins). CI additionally runs the 3.11/3.12/3.13 matrix. (The pinned
+set requires Python >=3.11; `requires-python` and the matrix were aligned to that.)
 
 ### 1. Reference validator (`PYTHONPATH=src python -m dagr_commerce_contracts.validate`) — exit 0
 ```
