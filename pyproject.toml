@@ -4,10 +4,10 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dagr-commerce-contracts"
-version = "0.1.0"
+version = "0.2.0"
 description = "Protocol-neutral, language-neutral commerce evidence vocabulary (JSON Schema Draft 2020-12 contracts, fixtures, and a reference validator)."
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.11"
 license = { text = "Apache-2.0" }
 authors = [{ name = "dagr-commerce-contracts maintainers" }]
 keywords = ["json-schema", "commerce", "evidence", "contracts", "protocol-neutral"]

@@ -4,7 +4,7 @@
   "title": "Native Evidence v0.1",
   "description": "A protocol-neutral wrapper that references one protocol-native object by digest and custody, preserving its native protocol, version, and object type. It is a reference to native evidence, not a replacement for it, and it must not be treated as an ARCS receipt or any verifier verdict. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "evidence_id", "native"],
+  "required": ["object_type", "contract_version", "evidence_id", "native"],
   "properties": {
     "object_type": { "const": "native_evidence" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },

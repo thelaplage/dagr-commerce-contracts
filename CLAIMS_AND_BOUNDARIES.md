@@ -72,8 +72,41 @@ No committed fixture contains a reusable credential, a real financial
 identifier, a PAN-equivalent value, a private key, a bearer token, or a raw
 secret. Sensitive native material is only ever referenced by a
 `redaction_marker`, a `digest`, or a `custody_reference`. See `REDACTION.md`.
-The `no-raw-sensitive-material` check scans positive fixtures for raw values
-under sensitive-looking fields.
+The `no-raw-sensitive-material` check scans every committed fixture (positive,
+negative, and mutation) for sensitive-looking property names at any depth and
+fails the gate on any such name in a positive fixture.
+
+## Constraints now enforced structurally (not merely described)
+
+The following constraints were previously described in prose but not enforced by
+the schemas or the validator. They are now enforced, each with a negative or
+mutation fixture that fails at the intended path/keyword:
+
+- **Extensions cannot smuggle sensitive material.** The `extensions` bucket is no
+  longer `additionalProperties: true`. It is a `safe_extension_object` whose
+  property names are rejected (`propertyNames` → `safe_extension_key`) when they
+  resemble sensitive fields (card/pan/cvv/bearer/secret/password/private_key/
+  token/…), boundary-aware and recursive, so a sensitive key is rejected at ANY
+  nesting depth. Proof: `negative/intent.smuggled-extension-key.json` (top-level
+  `card_number`) and `mutation/intent.nested-smuggled-extension.json` (nested
+  `extensions.detail.bearer_token`).
+- **Timestamps must be RFC 3339.** The validator installs a strict
+  `FormatChecker` for `date-time` (and `uri`), passed to every validator, so a
+  non-RFC3339 string is rejected. Proof: `negative/intent.bad-timestamp.json`.
+- **Digest value shape is bound to algorithm + encoding.** Hex digests must be
+  hexadecimal with the length the algorithm implies (sha-256/sha3-256 ⇒ 64,
+  sha-384 ⇒ 96, sha-512 ⇒ 128, blake3 ⇒ ≥64); base64/base64url must use the
+  matching alphabet. Proof: `mutation/native-evidence.nonhex-digest-value.json`.
+- **Redaction markers require their evidence.** `digest_only` requires a
+  `digest`, `custody_reference` requires a `custody`, `masked` requires a `hint`.
+  Proof: `mutation/evidence-envelope.digest-only-no-digest.json`.
+- **Prices/charges/caps are non-negative.** Amount fields use
+  `non_negative_monetary_amount`; a negative amount is rejected. Proof:
+  `mutation/settlement.negative-amount.json`.
+- **Cart line quantity is a positive integer** (`integer, minimum: 1`). Proof:
+  `mutation/cart.zero-quantity-line.json`.
+- **Every top-level object requires `contract_version`.** Proof:
+  `negative/order.missing-contract-version.json`.
 
 ## Verified gates (this head)
 
@@ -88,4 +121,5 @@ these independent, path-scoped checks; exact commands and counts are recorded in
 - `ecosystem-declarations` — all 13 `.ecosystem/*.yaml` validate against the
   vendored schemas.
 - `no-aggregate-verdict` — no aggregate-verdict token is used as an outcome value.
-- `no-raw-sensitive-material` — no raw sensitive value in a positive fixture.
+- `no-raw-sensitive-material` — scans every fixture for sensitive-looking property
+  names at any depth; no such name may appear in a positive fixture.

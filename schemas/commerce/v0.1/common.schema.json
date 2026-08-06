@@ -19,6 +19,7 @@
     },
     "timestamp": {
       "title": "RFC 3339 timestamp",
+      "description": "An RFC 3339 date-time. The `date-time` format is enforced by the reference validator via a strict FormatChecker (not merely described): non-RFC3339 strings such as \"not-a-timestamp\" are rejected.",
       "type": "string",
       "format": "date-time"
     },
@@ -28,7 +29,7 @@
     },
     "digest": {
       "title": "Content digest",
-      "description": "A cryptographic digest of a native payload. Carries the digest, never the payload.",
+      "description": "A cryptographic digest of a native payload. Carries the digest, never the payload. The value shape is bound to the declared algorithm and encoding: hex values must be hexadecimal with the length implied by the algorithm; base64/base64url values must use the matching alphabet.",
       "type": "object",
       "required": ["algorithm", "encoding", "value"],
       "properties": {
@@ -36,7 +37,41 @@
         "encoding": { "type": "string", "enum": ["hex", "base64", "base64url", "multibase"] },
         "value": { "type": "string", "minLength": 1, "maxLength": 1024 }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": ["encoding"], "properties": { "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "pattern": "^[0-9a-fA-F]+$" } } }
+        },
+        {
+          "if": { "required": ["encoding"], "properties": { "encoding": { "const": "base64" } } },
+          "then": { "properties": { "value": { "pattern": "^[A-Za-z0-9+/]+={0,2}$" } } }
+        },
+        {
+          "if": { "required": ["encoding"], "properties": { "encoding": { "const": "base64url" } } },
+          "then": { "properties": { "value": { "pattern": "^[A-Za-z0-9_-]+={0,2}$" } } }
+        },
+        {
+          "if": { "required": ["algorithm", "encoding"], "properties": { "algorithm": { "const": "sha-256" }, "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "minLength": 64, "maxLength": 64 } } }
+        },
+        {
+          "if": { "required": ["algorithm", "encoding"], "properties": { "algorithm": { "const": "sha3-256" }, "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "minLength": 64, "maxLength": 64 } } }
+        },
+        {
+          "if": { "required": ["algorithm", "encoding"], "properties": { "algorithm": { "const": "sha-384" }, "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "minLength": 96, "maxLength": 96 } } }
+        },
+        {
+          "if": { "required": ["algorithm", "encoding"], "properties": { "algorithm": { "const": "sha-512" }, "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "minLength": 128, "maxLength": 128 } } }
+        },
+        {
+          "if": { "required": ["algorithm", "encoding"], "properties": { "algorithm": { "const": "blake3" }, "encoding": { "const": "hex" } } },
+          "then": { "properties": { "value": { "minLength": 64 } } }
+        }
+      ]
     },
     "custody_disposition": {
       "title": "Custody disposition",
@@ -84,7 +119,7 @@
     },
     "redaction_marker": {
       "title": "Redaction marker",
-      "description": "Stands in the place of sensitive native material. A redaction marker carries no raw secret: it records the class of material and how it was removed, optionally with a digest or custody reference. A `masked` marker exposes at most a short, non-reconstructable hint.",
+      "description": "Stands in the place of sensitive native material. A redaction marker carries no raw secret: it records the class of material and how it was removed, optionally with a digest or custody reference. A `masked` marker exposes at most a short, non-reconstructable hint. The method is bound to its evidence: `digest_only` requires a `digest`, `custody_reference` requires a `custody`, and `masked` requires a `hint`.",
       "type": "object",
       "required": ["redacted", "material_class", "method"],
       "properties": {
@@ -99,11 +134,25 @@
           "maxLength": 8
         }
       },
-      "additionalProperties": false
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": { "required": ["method"], "properties": { "method": { "const": "digest_only" } } },
+          "then": { "required": ["digest"] }
+        },
+        {
+          "if": { "required": ["method"], "properties": { "method": { "const": "custody_reference" } } },
+          "then": { "required": ["custody"] }
+        },
+        {
+          "if": { "required": ["method"], "properties": { "method": { "const": "masked" } } },
+          "then": { "required": ["hint"] }
+        }
+      ]
     },
     "monetary_amount": {
-      "title": "Monetary amount",
-      "description": "A protocol-neutral amount. `value` is a decimal string to avoid floating-point drift. `currency_code` is a free 3-8 char code and does not bind any specific currency, rail, or chain.",
+      "title": "Monetary amount (signed)",
+      "description": "A protocol-neutral amount that MAY carry a sign. `value` is a decimal string to avoid floating-point drift. `currency_code` is a free 3-8 char code and does not bind any specific currency, rail, or chain. Price/charge fields do NOT use this def; they use non_negative_monetary_amount so a negative price is rejected structurally.",
       "type": "object",
       "required": ["currency_code", "value"],
       "properties": {
@@ -112,6 +161,14 @@
         "exponent": { "type": "integer", "minimum": 0, "maximum": 30 }
       },
       "additionalProperties": false
+    },
+    "non_negative_monetary_amount": {
+      "title": "Non-negative monetary amount",
+      "description": "A monetary amount for a price, charge, cap, or refund total. Identical to monetary_amount except the `value` must be non-negative (no leading minus): a negative amount such as \"-999.99\" is rejected structurally.",
+      "allOf": [
+        { "$ref": "#/$defs/monetary_amount" },
+        { "properties": { "value": { "pattern": "^[0-9]+(\\.[0-9]+)?$" } } }
+      ]
     },
     "subject_reference": {
       "title": "Subject reference",
@@ -175,11 +232,34 @@
       },
       "additionalProperties": false
     },
+    "safe_extension_key": {
+      "title": "Safe extension key",
+      "description": "An extension property name that does not resemble a sensitive-material field name, an aggregate-verdict field, or a native-protocol/ARCS-authority field. The match is case-insensitive and boundary-aware (word boundaries are start/end of the key or an underscore/hyphen), so \"pan\" is rejected but \"japan\"/\"span\" are not. Rejected key families: (a) credentials — card/pan/cvv/cvc/bearer/secret/password/private_key/mandate_token/account_number/iban/routing/ssn/api_key/token; (b) aggregate verdicts — verdict/trusted/safe/compliant/verified/governed; (c) authority impersonation — object_type/envelope_kind/arcs_receipt/verifier_verdict/receipt/attestation. This prevents the extensions bucket from reintroducing, at any nesting depth, raw credentials, an aggregate verdict, or a field that impersonates native-protocol or ARCS authority.",
+      "type": "string",
+      "not": {
+        "pattern": "(?i)(^|[_-])(card|pan|cvv|cvc|bearer|secret|client_secret|password|passwd|private_key|privatekey|mandate_token|account_number|iban|routing|ssn|api_key|apikey|access_token|refresh_token|token|verdict|trusted|safe|compliant|verified|governed|object_type|envelope_kind|arcs_receipt|verifier_verdict|receipt|attestation)($|[_-])"
+      }
+    },
+    "safe_value": {
+      "title": "Safe extension value",
+      "description": "A value permitted inside the extensions bucket: a scalar or null, an array of safe values, or a nested safe extension object. Because a nested object is itself a safe_extension_object, sensitive-looking keys are rejected at ANY nesting depth.",
+      "anyOf": [
+        { "type": ["string", "number", "boolean", "null"] },
+        { "type": "array", "items": { "$ref": "#/$defs/safe_value" } },
+        { "$ref": "#/$defs/safe_extension_object" }
+      ]
+    },
+    "safe_extension_object": {
+      "title": "Safe extension object",
+      "description": "An object whose property names may not resemble sensitive-material field names (propertyNames) and whose values are recursively safe (additionalProperties), so sensitive material cannot be smuggled at any nesting depth.",
+      "type": "object",
+      "propertyNames": { "$ref": "#/$defs/safe_extension_key" },
+      "additionalProperties": { "$ref": "#/$defs/safe_value" }
+    },
     "extensions": {
       "title": "Extension bucket",
-      "description": "Namespaced bucket for protocol-specific or caller-specific attributes. Keeping extensions here preserves closure on the core object while allowing additive, non-authoritative data. Must not carry raw sensitive material; use a redaction_marker instead.",
-      "type": "object",
-      "additionalProperties": true
+      "description": "Namespaced bucket for protocol-specific or caller-specific attributes. Keeping extensions here preserves closure on the core object while allowing additive, non-authoritative data. Must not carry raw sensitive material: sensitive-looking property names are rejected structurally at any nesting depth (see safe_extension_object). Use a redaction_marker or digest instead.",
+      "$ref": "#/$defs/safe_extension_object"
     },
     "object_envelope_fields": {
       "title": "Common object envelope fields",

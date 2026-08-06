@@ -103,3 +103,20 @@ def test_vendored_ecosystem_schema_provenance():
         assert hashlib.sha256(raw).hexdigest() == entry["sha256"], (
             f"vendored schema {entry['path']} does not match recorded provenance digest"
         )
+
+
+def test_compat_report_is_fresh():
+    """The committed compatibility artifacts must match a fresh regeneration, so a
+    schema tightening cannot land without its compatibility classification being
+    (re)generated from execution."""
+    import importlib.util
+
+    gen_path = REPO_ROOT / "scripts" / "gen_compat_report.py"
+    spec = importlib.util.spec_from_file_location("gen_compat_report", gen_path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    data = mod.build()
+    committed_json = (REPO_ROOT / "compatibility" / "compat-report.v0.1.json").read_text()
+    committed_md = (REPO_ROOT / "compatibility" / "COMPATIBILITY_REPORT.md").read_text()
+    assert committed_json == mod.render_json(data), "compat-report.v0.1.json is stale; run scripts/gen_compat_report.py"
+    assert committed_md == mod.render_md(data), "COMPATIBILITY_REPORT.md is stale; run scripts/gen_compat_report.py"

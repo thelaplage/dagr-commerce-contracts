@@ -4,7 +4,7 @@
   "title": "Settlement v0.1",
   "description": "A protocol-neutral projection of an observed settlement attempt. Settlement state is an operational observation, including an explicit uncertain state; it is never an aggregate trusted/safe/compliant/verified/governed verdict. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "settlement_id", "settlement_state"],
+  "required": ["object_type", "contract_version", "settlement_id", "settlement_state"],
   "properties": {
     "object_type": { "const": "settlement" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -15,7 +15,7 @@
       "type": "string",
       "enum": ["pending", "settled_observed", "failed_observed", "uncertain"]
     },
-    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "amount": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "authorization_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
     "requirement_ref": { "$ref": "common.schema.json#/$defs/subject_reference" },
     "settlement_reference_digest": { "$ref": "common.schema.json#/$defs/digest" },

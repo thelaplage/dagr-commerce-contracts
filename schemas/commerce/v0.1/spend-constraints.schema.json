@@ -4,14 +4,14 @@
   "title": "Spend Constraints v0.1",
   "description": "A protocol-neutral projection of constraints on spending (caps, scopes, time windows, execution limits). These are declarative constraints only; enforcement and any allow/deny decision belong to a consumer, not to this vocabulary. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "constraints_id"],
+  "required": ["object_type", "contract_version", "constraints_id"],
   "properties": {
     "object_type": { "const": "spend_constraints" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
     "created_at": { "$ref": "common.schema.json#/$defs/timestamp" },
     "constraints_id": { "$ref": "common.schema.json#/$defs/identifier" },
-    "per_transaction_cap": { "$ref": "common.schema.json#/$defs/monetary_amount" },
-    "cumulative_cap": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "per_transaction_cap": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
+    "cumulative_cap": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "currency_scope": {
       "type": "array",
       "items": { "type": "string", "pattern": "^[A-Za-z0-9]{3,8}$" }

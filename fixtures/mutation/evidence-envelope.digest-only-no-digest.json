@@ -1,0 +1,23 @@
+{
+  "object_type": "evidence_envelope",
+  "envelope_kind": "protocol_neutral_evidence_projection",
+  "contract_version": "0.1.0",
+  "envelope_id": "envelope-0001",
+  "created_at": "2026-08-05T12:15:00Z",
+  "projections": [
+    {
+      "protocol_family": "example-native-protocol",
+      "protocol_version": "1.0",
+      "native_object_type": "payment_requirements",
+      "digest": {
+        "algorithm": "sha-256",
+        "encoding": "hex",
+        "value": "a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7a7"
+      },
+      "custody": { "disposition": "external_store", "location_hint": "evidence-store/native/0001" }
+    }
+  ],
+  "redactions": [
+    { "redacted": true, "material_class": "bearer_token", "method": "digest_only" }
+  ]
+}

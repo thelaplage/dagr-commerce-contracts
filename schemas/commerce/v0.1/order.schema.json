@@ -4,7 +4,7 @@
   "title": "Order v0.1",
   "description": "A protocol-neutral projection of an order record. Order state is an operational observation including an explicit uncertain state. Relative $ref values resolve against this $id.",
   "type": "object",
-  "required": ["object_type", "order_id", "order_state"],
+  "required": ["object_type", "contract_version", "order_id", "order_state"],
   "properties": {
     "object_type": { "const": "order" },
     "contract_version": { "$ref": "common.schema.json#/$defs/contract_version" },
@@ -16,7 +16,7 @@
       "type": "string",
       "enum": ["created", "updated", "fulfilled_observed", "cancelled_observed", "uncertain"]
     },
-    "amount": { "$ref": "common.schema.json#/$defs/monetary_amount" },
+    "amount": { "$ref": "common.schema.json#/$defs/non_negative_monetary_amount" },
     "native": { "$ref": "common.schema.json#/$defs/protocol_native_reference" },
     "observations": {
       "type": "array",

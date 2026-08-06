@@ -1,0 +1,7 @@
+{
+  "object_type": "intent",
+  "contract_version": "0.1.0",
+  "intent_id": "intent-neg-ts-1",
+  "created_at": "not-a-timestamp",
+  "intent_kind": "purchase"
+}
