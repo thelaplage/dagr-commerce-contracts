@@ -34,5 +34,16 @@
       "state": "satisfied",
       "detail": "Authorization material carried as tokenized_reference; raw PAN absent."
     }
-  ]
+  ],
+  "extensions": {
+    "synthetic_example": true,
+    "shared_contract_disclaimer": "Synthetic, protocol-neutral shared-contract EXAMPLE only. This fixture establishes NO Visa authority, NO Visa approval, NO Visa conformance, NO TAP implementation, and NO T0 resolution (T0 is on HOLD). The string 'Visa-TAP' here names only the native protocol family that this shared, repository-local vocabulary projects from; it asserts no relationship with, endorsement by, certification by, or conformance to Visa or the Visa Token Authentication Program. No network resolution is implied; all identifiers are repository-local.",
+    "establishes": {
+      "visa_authority": false,
+      "visa_approval": false,
+      "visa_conformance": false,
+      "tap_implementation": false,
+      "t0_resolution": false
+    }
+  }
 }

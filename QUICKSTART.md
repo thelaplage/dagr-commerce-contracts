@@ -20,7 +20,7 @@ PYTHONPATH=src python3 -m dagr_commerce_contracts.validate
 # Machine-readable output:
 PYTHONPATH=src python3 -m dagr_commerce_contracts.validate --json
 
-# Full test suite (23 tests, C0+C1):
+# Full test suite (40 tests, C0+C1 incl. corrective executable checks):
 python3 -m pytest -q
 ```
 
@@ -54,6 +54,21 @@ Exit codes for the reference validator:
     match on-disk files.
 12. `types-round-trip` — every positive fixture survives a lossless JSON → TypedDict → JSON
     round-trip and the result still validates.
+13. `no-committed-secrets` — no git-tracked file carries a credential-shaped string
+    (delegates to `scripts/scan_secrets.py`).
+14. `package-artifacts` — the release manifest records well-formed package-artifact
+    digests (a wheel and an sdist, each with a 64-hex sha256 and a positive byte_length).
+
+## Release artifacts and secret scan
+
+```
+# Repo-wide committed-secret scan (exit 2 on any credential-shaped hit):
+python3 scripts/scan_secrets.py
+
+# Build the wheel + sdist hermetically and verify the recorded artifact digests
+# (the wheel is byte-reproducible under the manifest's build_binding):
+python3 scripts/gen_release_manifest.py --verify
+```
 
 ## Regenerate derived files
 

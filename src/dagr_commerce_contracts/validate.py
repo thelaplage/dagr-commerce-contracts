@@ -38,6 +38,15 @@ C1:
 12. ``types-round-trip``       — for every positive fixture: JSON → dict → JSON is
                                  lossless and the round-tripped instance still
                                  validates against its schema.
+13. ``no-committed-secrets``   — no git-tracked file carries a credential-shaped
+                                 string (PEM private key, AWS/GitHub/Slack/Google/
+                                 Stripe/OpenAI key). Delegates to
+                                 scripts/scan_secrets.py.
+14. ``package-artifacts``      — the release manifest records well-formed package
+                                 artifact digests (a wheel and an sdist, each with
+                                 a 64-hex sha256 and a positive byte_length); any
+                                 artifact actually present under dist/ hashes to
+                                 its recorded digest.
 
 Exit codes
 ----------
@@ -69,6 +78,7 @@ VERSION_POLICY = REPO_ROOT / "compatibility" / "version-policy.v0.1.json"
 COMPAT_REPORT_JSON = REPO_ROOT / "compatibility" / "compat-report.v0.1.json"
 COMPAT_REPORT_MD = REPO_ROOT / "compatibility" / "COMPATIBILITY_REPORT.md"
 RELEASE_MANIFEST = REPO_ROOT / "release" / "release-manifest.v0.2.0.json"
+SCRIPTS_DIR = REPO_ROOT / "scripts"
 
 # Aggregate-verdict tokens that must never appear as an outcome VALUE.
 AGGREGATE_VERDICT_TOKENS = {"trusted", "safe", "compliant", "verified", "governed"}
@@ -751,6 +761,108 @@ def check_types_round_trip(index: dict, registry, Draft202012Validator) -> Check
     )
 
 
+def _load_script(name: str):
+    """Import a module from scripts/ by path (scripts/ is not an installed pkg)."""
+    import importlib.util
+    path = SCRIPTS_DIR / name
+    if not path.is_file():
+        raise DependencyMissing(f"scripts/{name} missing")
+    spec = importlib.util.spec_from_file_location(name[:-3], path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def check_no_committed_secrets() -> CheckResult:
+    """C1: no git-tracked file carries a credential-shaped string.
+
+    Delegates to scripts/scan_secrets.py, which matches high-signal secret
+    shapes only (PEM blocks, provider API keys), so schema token vocabulary and
+    sha-256 hex digests are not flagged.
+    """
+    try:
+        scanner = _load_script("scan_secrets.py")
+    except DependencyMissing as exc:
+        return CheckResult("no-committed-secrets", False, str(exc), [str(exc)])
+    try:
+        findings = scanner.scan()
+    except Exception as exc:
+        return CheckResult("no-committed-secrets", False,
+                           f"secret scan could not run: {exc}", [str(exc)])
+    passed = not findings
+    return CheckResult(
+        "no-committed-secrets",
+        passed,
+        "no credential-shaped strings in tracked files"
+        if passed else f"{len(findings)} candidate secret(s) found",
+        findings,
+    )
+
+
+def artifact_structural_failures(manifest: dict) -> list[str]:
+    """Return structural problems in a manifest's package_artifacts (no I/O).
+
+    A wheel and an sdist must be recorded, each with a 64-hex sha256, a positive
+    byte_length, a valid kind, and a package-named filename. Digest-vs-artifact
+    MISMATCH is not checked here (that needs a built artifact and reproducibility
+    semantics — see scripts/gen_release_manifest.py --verify); this is the
+    always-on structural gate that the C1-1 deliverable (digests recorded) rests
+    on, and it is deterministic regardless of whether dist/ exists.
+    """
+    import re as _re
+    arts = manifest.get("package_artifacts", [])
+    failures: list[str] = []
+    if not arts:
+        return [
+            "release manifest package_artifacts is empty; build the wheel + sdist "
+            "and record their digests: python scripts/gen_release_manifest.py --build"
+        ]
+    hex64 = _re.compile(r"^[0-9a-f]{64}$")
+    kinds: set[str] = set()
+    for a in arts:
+        f = a.get("file", "?")
+        if not isinstance(a.get("sha256"), str) or not hex64.match(a.get("sha256", "")):
+            failures.append(f"{f}: sha256 is not a 64-char lowercase hex digest")
+        if not isinstance(a.get("byte_length"), int) or a.get("byte_length", 0) <= 0:
+            failures.append(f"{f}: byte_length must be a positive integer")
+        kind = a.get("kind")
+        if kind not in {"wheel", "sdist"}:
+            failures.append(f"{f}: kind must be 'wheel' or 'sdist' (got {kind!r})")
+        else:
+            kinds.add(kind)
+        if not (f.endswith(".whl") or f.endswith(".tar.gz")):
+            failures.append(f"{f}: unexpected artifact extension")
+        if "dagr_commerce_contracts-" not in f:
+            failures.append(f"{f}: filename does not name the package")
+    if "wheel" not in kinds:
+        failures.append("no wheel artifact recorded")
+    if "sdist" not in kinds:
+        failures.append("no sdist artifact recorded")
+    return failures
+
+
+def check_package_artifacts() -> CheckResult:
+    """C1: release manifest records well-formed package-artifact digests (C1-1)."""
+    if not RELEASE_MANIFEST.is_file():
+        return CheckResult("package-artifacts", False,
+                           "release/release-manifest.v0.2.0.json missing",
+                           ["run: python scripts/gen_release_manifest.py --build"])
+    try:
+        manifest = json.loads(RELEASE_MANIFEST.read_text())
+    except Exception as exc:
+        return CheckResult("package-artifacts", False,
+                           f"could not parse release manifest: {exc}", [str(exc)])
+    failures = artifact_structural_failures(manifest)
+    arts = manifest.get("package_artifacts", [])
+    kinds = sorted({a.get("kind") for a in arts if a.get("kind") in {"wheel", "sdist"}})
+    passed = not failures
+    summary = (
+        f"{len(arts)} artifact digest(s) recorded ({', '.join(kinds) or 'none'}), well-formed"
+        if passed else f"{len(failures)} package-artifact problem(s)"
+    )
+    return CheckResult("package-artifacts", passed, summary, failures)
+
+
 def run_all() -> tuple[list[CheckResult], int]:
     """Run every check. Returns (results, exit_code)."""
     try:
@@ -772,6 +884,8 @@ def run_all() -> tuple[list[CheckResult], int]:
         check_compat_report_current(),
         check_release_manifest_current(),
         check_types_round_trip(index, registry, Draft202012Validator),
+        check_no_committed_secrets(),
+        check_package_artifacts(),
     ]
     exit_code = 0 if all(r.passed for r in results) else 1
     return results, exit_code

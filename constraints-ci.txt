@@ -10,6 +10,12 @@ referencing==0.37.0
 PyYAML==6.0.3
 pytest==9.1.1
 #
+# Release build toolchain (used by the C1 artifact build + verify step;
+# --no-isolation build needs these present so nothing is fetched at build time):
+build==1.5.0
+setuptools==81.0.0
+wheel==0.47.0
+#
 # Transitive dependencies (pinned so the resolver cannot float them):
 attrs==26.1.0
 jsonschema-specifications==2025.9.1
