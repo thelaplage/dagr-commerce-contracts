@@ -1,0 +1,29 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.2.0",
+  "created_at": "2026-08-06T12:03:00Z",
+  "authorization_id": "ap2-payauth-0001",
+  "amount": { "currency_code": "EUR", "value": "9.99" },
+  "payer_ref": { "ref_type": "principal", "id": "principal-ap2-user-001" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-ap2-001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "ap2-preq-0001" },
+  "one_time": false,
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "reusable_mandate",
+    "method": "custody_reference",
+    "custody": { "disposition": "external_store", "location_hint": "ap2-mandate-store-ref-001" }
+  },
+  "native": {
+    "protocol_family": "AP2",
+    "protocol_version": "2.0",
+    "native_object_type": "PaymentAuthorization",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b1b"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-06T12:03:00Z"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "object_type": "settlement",
+  "contract_version": "0.2.0",
+  "created_at": "2026-08-06T10:02:00Z",
+  "settlement_id": "x402-settle-0001",
+  "settlement_state": "settled_observed",
+  "amount": { "currency_code": "USD", "value": "5.00" },
+  "authorization_ref": { "ref_type": "payment_authorization", "id": "x402-payauth-0001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "x402-preq-0001" },
+  "native": {
+    "protocol_family": "x402",
+    "protocol_version": "1",
+    "native_object_type": "PaymentConfirmation",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3c3"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-06T10:02:00Z"
+  },
+  "observations": [
+    {
+      "check_id": "x402.settlement.amount_matches_requirement",
+      "path": "$.amount.value",
+      "state": "satisfied"
+    }
+  ]
+}

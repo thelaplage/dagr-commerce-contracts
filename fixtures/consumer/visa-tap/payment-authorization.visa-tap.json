@@ -1,0 +1,49 @@
+{
+  "object_type": "payment_authorization",
+  "contract_version": "0.2.0",
+  "created_at": "2026-08-06T14:00:00Z",
+  "authorization_id": "vtap-payauth-0001",
+  "amount": { "currency_code": "USD", "value": "125.00" },
+  "payer_ref": { "ref_type": "principal", "id": "principal-vtap-cardholder-001" },
+  "payee_ref": { "ref_type": "merchant", "id": "merchant-vtap-001" },
+  "requirement_ref": { "ref_type": "payment_requirement", "id": "vtap-preq-0001" },
+  "one_time": true,
+  "expires_at": "2026-08-06T14:05:00Z",
+  "authorization_material": {
+    "redacted": true,
+    "material_class": "pan_equivalent",
+    "method": "tokenized_reference",
+    "hint": "x6789"
+  },
+  "native": {
+    "protocol_family": "Visa-TAP",
+    "protocol_version": "2.0",
+    "native_object_type": "TAPAuthorizationRequest",
+    "digest": {
+      "algorithm": "sha-256",
+      "encoding": "hex",
+      "value": "5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f5f"
+    },
+    "custody": { "disposition": "caller_retained" },
+    "captured_at": "2026-08-06T14:00:00Z"
+  },
+  "observations": [
+    {
+      "check_id": "visa-tap.authorization.token_not_raw_pan",
+      "path": "$.authorization_material.method",
+      "state": "satisfied",
+      "detail": "Authorization material carried as tokenized_reference; raw PAN absent."
+    }
+  ],
+  "extensions": {
+    "synthetic_example": true,
+    "shared_contract_disclaimer": "Synthetic, protocol-neutral shared-contract EXAMPLE only. This fixture establishes NO Visa authority, NO Visa approval, NO Visa conformance, NO TAP implementation, and NO T0 resolution (T0 is on HOLD). The string 'Visa-TAP' here names only the native protocol family that this shared, repository-local vocabulary projects from; it asserts no relationship with, endorsement by, certification by, or conformance to Visa or the Visa Token Authentication Program. No network resolution is implied; all identifiers are repository-local.",
+    "establishes": {
+      "visa_authority": false,
+      "visa_approval": false,
+      "visa_conformance": false,
+      "tap_implementation": false,
+      "t0_resolution": false
+    }
+  }
+}

@@ -25,13 +25,27 @@ jobs:
           python -m pip install -r constraints-ci.txt
           python -m pip install -e .
 
-      - name: Reference validator (per-check, path-scoped)
+      - name: Reference validator — C0+C1 gate (per-check, path-scoped)
         run: PYTHONPATH=src python -m dagr_commerce_contracts.validate
+
+      - name: Committed-secret scan (fail-closed, exit 2 on hit)
+        run: python scripts/scan_secrets.py
 
       - name: Version policy is not stale
         run: |
           python scripts/gen_version_policy.py
           git diff --exit-code compatibility/version-policy.v0.1.json
+
+      - name: Generated types are not stale
+        run: |
+          python scripts/gen_types.py
+          git diff --exit-code src/dagr_commerce_contracts/types.py
+
+      - name: Release manifest schema-digests are not stale
+        run: python scripts/gen_release_manifest.py --check
+
+      - name: Release artifacts — build (hermetic) + verify recorded digests
+        run: python scripts/gen_release_manifest.py --verify
 
       - name: Test suite
         run: python -m pytest -q
